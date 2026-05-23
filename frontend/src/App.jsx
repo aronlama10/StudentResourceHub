@@ -1,11 +1,24 @@
-
+import { useState } from "react";
+import LandingPage from "./pages/LandingPage";
 
 function App() {
+  const [isAuthOpen, setAuthOpen] = useState(false);
+  const [authMode, setAuthMode] = useState("register");
+
+  const openAuth = (mode = "register") => {
+    setAuthMode(mode);
+    setAuthOpen(true);
+  };
+
   return (
-    <>
-      <h1 className="text-gray-700 text-center text-2xl">Student Resource Hub</h1>
-    </>
-  )
+    <LandingPage
+      authMode={authMode}
+      isAuthOpen={isAuthOpen}
+      onAuthClose={() => setAuthOpen(false)}
+      onAuthModeChange={setAuthMode}
+      onAuthOpen={openAuth}
+    />
+  );
 }
 
-export default App
+export default App;
