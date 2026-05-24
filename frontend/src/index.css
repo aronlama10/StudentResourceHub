@@ -1,19 +1,43 @@
-@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
-@import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap");
 
 :root {
-  font-family: "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
-  color: #111111;
-  background: linear-gradient(180deg, #fffdf8 0%, #f5f0e6 100%);
   color-scheme: light;
-  --page-bg: #f5f0e6;
-  --ink: #111111;
-  --card: #fffdf9;
-  --line: rgba(17, 17, 17, 0.12);
-  --sun: #ffe36e;
-  --berry: #ff8f7c;
-  --mint: #c6efce;
-  --sky: #b9ddff;
+  --color-bg: #fff3d6;
+  --color-ink: #121212;
+  --color-ink-muted: #3d3d3d;
+  --color-card: #ffffff;
+  --color-stroke: #121212;
+  --color-sun: #ffd44d;
+  --color-sky: #3a7dff;
+  --color-mint: #7cffb2;
+  --color-berry: #ff4d8d;
+  --color-orange: #ff9f3f;
+  --color-cream: #fffaf0;
+
+  --border-strong: 3px solid var(--color-stroke);
+  --shadow-offset: 6px 6px 0 var(--color-stroke);
+  --shadow-offset-sm: 4px 4px 0 var(--color-stroke);
+  --radius-md: 14px;
+  --radius-lg: 22px;
+
+  --font-heading: "Space Grotesk", "Segoe UI", sans-serif;
+  --font-body: "Space Grotesk", "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", "Segoe UI", monospace;
+
+  --section-padding: 96px 0;
+  --container-max: 1160px;
+  --container-padding: 0 24px;
+
+  --transition-fast: 0.2s ease;
+  --transition-base: 0.35s ease;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 html {
@@ -24,10 +48,12 @@ html {
 }
 
 body {
-  margin: 0;
   min-height: 100vh;
-  background: var(--page-bg);
-  color: var(--ink);
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  line-height: 1.6;
+  overflow-x: hidden;
 }
 
 body::before {
@@ -37,40 +63,103 @@ body::before {
   pointer-events: none;
   background:
     radial-gradient(
-      circle at 12% 8%,
-      rgba(255, 227, 110, 0.2),
-      transparent 24%
+      circle at 15% 10%,
+      rgba(255, 212, 77, 0.35),
+      transparent 35%
     ),
     radial-gradient(
-      circle at 88% 12%,
-      rgba(185, 221, 255, 0.15),
-      transparent 22%
+      circle at 85% 15%,
+      rgba(58, 125, 255, 0.2),
+      transparent 30%
     ),
     radial-gradient(
-      circle at 15% 88%,
-      rgba(198, 239, 206, 0.12),
-      transparent 18%
+      circle at 20% 85%,
+      rgba(124, 255, 178, 0.22),
+      transparent 34%
+    ),
+    repeating-linear-gradient(
+      135deg,
+      rgba(18, 18, 18, 0.04) 0,
+      rgba(18, 18, 18, 0.04) 2px,
+      transparent 2px,
+      transparent 14px
     );
   opacity: 0.9;
 }
 
-* {
-  box-sizing: border-box;
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
 }
 
 button,
-a,
 input,
 textarea,
 select {
   font: inherit;
+  color: inherit;
 }
 
 button {
-  letter-spacing: inherit;
+  cursor: pointer;
+  background: none;
+  border: none;
 }
 
 ::selection {
-  background: #111111;
-  color: #fffdf8;
+  background: var(--color-ink);
+  color: var(--color-cream);
+}
+
+.container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: var(--container-padding);
+}
+
+.neo-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border: var(--border-strong);
+  background: var(--color-cream);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  box-shadow: var(--shadow-offset-sm);
+}
+
+.neo-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 22px;
+  border: var(--border-strong);
+  background: var(--color-cream);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  box-shadow: var(--shadow-offset-sm);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.neo-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 8px 8px 0 var(--color-stroke);
+}
+
+.neo-outline {
+  border: var(--border-strong);
+  background: var(--color-card);
+  box-shadow: var(--shadow-offset);
 }

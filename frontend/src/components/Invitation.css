@@ -1,0 +1,131 @@
+/* Invitation */
+.invitation {
+  padding: var(--section-padding);
+  background: var(--color-cream);
+}
+
+.invitation__card {
+  border: var(--border-strong);
+  background: var(--color-card);
+  box-shadow: var(--shadow-offset);
+  padding: 70px 60px;
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
+}
+
+.invitation--visible .invitation__card {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.invitation__card::before,
+.invitation__card::after {
+  content: "";
+  position: absolute;
+  border: var(--border-strong);
+  width: 120px;
+  height: 120px;
+  background: var(--color-sun);
+  box-shadow: var(--shadow-offset-sm);
+  opacity: 0.7;
+}
+
+.invitation__card::before {
+  top: -50px;
+  left: -40px;
+  transform: rotate(-8deg);
+}
+
+.invitation__card::after {
+  bottom: -50px;
+  right: -40px;
+  background: var(--color-mint);
+  transform: rotate(10deg);
+}
+
+.invitation__content {
+  position: relative;
+  z-index: 1;
+  max-width: 620px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.invitation__tag {
+  background: var(--color-card);
+}
+
+.invitation__title {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 4vw, 3rem);
+  margin: 18px 0 12px;
+  letter-spacing: -0.02em;
+}
+
+.invitation__subtitle {
+  color: var(--color-ink-muted);
+}
+
+.invitation__cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin-top: 28px;
+}
+
+.invitation__btn {
+  border: var(--border-strong);
+  padding: 14px 22px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  box-shadow: var(--shadow-offset-sm);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.invitation__btn--primary {
+  background: var(--color-berry);
+  color: #fff;
+}
+
+.invitation__btn--ghost {
+  background: var(--color-card);
+  font-size: 0.8rem;
+}
+
+.invitation__btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 8px 8px 0 var(--color-stroke);
+}
+
+.invitation__trust {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 26px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.7rem;
+  justify-content: center;
+}
+
+.invitation__trust span {
+  border: 2px solid var(--color-stroke);
+  padding: 6px 10px;
+  background: var(--color-cream);
+}
+
+@media (max-width: 768px) {
+  .invitation__card {
+    padding: 50px 24px;
+  }
+}

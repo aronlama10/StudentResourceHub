@@ -1,23 +1,18 @@
-import { useState } from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
+import Auth from "./pages/Auth";
+import "./App.css";
 
 function App() {
-  const [isAuthOpen, setAuthOpen] = useState(false);
-  const [authMode, setAuthMode] = useState("register");
-
-  const openAuth = (mode = "register") => {
-    setAuthMode(mode);
-    setAuthOpen(true);
-  };
-
   return (
-    <LandingPage
-      authMode={authMode}
-      isAuthOpen={isAuthOpen}
-      onAuthClose={() => setAuthOpen(false)}
-      onAuthModeChange={setAuthMode}
-      onAuthOpen={openAuth}
-    />
+    <BrowserRouter>
+      <div className="app">
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/auth" element={<Auth />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
 }
 

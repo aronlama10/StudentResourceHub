@@ -1,0 +1,132 @@
+/* Auth page */
+.auth {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 40px 24px;
+  background: var(--color-bg);
+}
+
+.auth__panel {
+  width: 100%;
+  max-width: 520px;
+}
+
+.auth__back {
+  display: inline-block;
+  margin-bottom: 16px;
+  border: var(--border-strong);
+  padding: 8px 12px;
+  background: var(--color-card);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  box-shadow: var(--shadow-offset-sm);
+}
+
+.auth__card {
+  border: var(--border-strong);
+  background: var(--color-card);
+  box-shadow: var(--shadow-offset);
+  padding: 36px;
+}
+
+.auth__logo {
+  border: var(--border-strong);
+  padding: 10px 14px;
+  background: var(--color-sun);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  box-shadow: var(--shadow-offset-sm);
+  width: fit-content;
+  margin: 0 auto 20px;
+}
+
+.auth__title {
+  text-align: center;
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  margin-bottom: 6px;
+}
+
+.auth__subtitle {
+  text-align: center;
+  color: var(--color-ink-muted);
+  margin-bottom: 22px;
+}
+
+.auth__tabs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.auth__tab {
+  border: var(--border-strong);
+  background: var(--color-card);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  padding: 10px;
+  box-shadow: var(--shadow-offset-sm);
+}
+
+.auth__tab--active {
+  background: var(--color-mint);
+}
+
+.auth__form {
+  display: grid;
+  gap: 14px;
+}
+
+.auth__field {
+  display: grid;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.auth__field input {
+  border: var(--border-strong);
+  padding: 12px 14px;
+  box-shadow: var(--shadow-offset-sm);
+  background: var(--color-cream);
+}
+
+.auth__submit {
+  margin-top: 6px;
+  border: var(--border-strong);
+  padding: 14px;
+  background: var(--color-berry);
+  color: #fff;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  box-shadow: var(--shadow-offset-sm);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.auth__submit:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 8px 8px 0 var(--color-stroke);
+}
+
+.auth__toggle {
+  margin-top: 18px;
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+.auth__toggle button {
+  border-bottom: 2px solid var(--color-stroke);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
