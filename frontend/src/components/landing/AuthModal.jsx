@@ -55,7 +55,7 @@ function AuthModal({ authMode, isOpen, onClose, onModeChange }) {
             </h3>
           </div>
           <button
-            className="border-[3px] border-black bg-[var(--sun)] px-3 py-2 text-xs font-black uppercase tracking-[0.12em] shadow-[3px_3px_0_0_#111]"
+            className="border-[3px] border-black bg-(--sun) px-3 py-2 text-xs font-black uppercase tracking-[0.12em] shadow-[3px_3px_0_0_#111]"
             onClick={onClose}
             type="button"
           >
@@ -64,9 +64,9 @@ function AuthModal({ authMode, isOpen, onClose, onModeChange }) {
         </div>
         <div className="mt-5 flex gap-3 border-[3px] border-black bg-white p-2">
           <button
-            className={`flex-1 border-[2px] border-black px-4 py-2 text-sm font-extrabold uppercase tracking-[0.1em] shadow-[1px_1px_0_0_#111] transition ${
+            className={`flex-1 border-2 border-black px-4 py-2 text-sm font-extrabold uppercase tracking-widest shadow-[1px_1px_0_0_#111] transition ${
               activeMode === "login"
-                ? "bg-[var(--berry)] text-white"
+                ? "bg-(--berry) text-white"
                 : "bg-white"
             }`}
             onClick={() => handleModeChange("login")}
@@ -75,8 +75,8 @@ function AuthModal({ authMode, isOpen, onClose, onModeChange }) {
             Log in
           </button>
           <button
-            className={`flex-1 border-[2px] border-black px-4 py-2 text-sm font-extrabold uppercase tracking-[0.1em] shadow-[1px_1px_0_0_#111] transition ${
-              activeMode === "register" ? "bg-[var(--mint)]" : "bg-white"
+            className={`flex-1 border-2 border-black px-4 py-2 text-sm font-extrabold uppercase tracking-widest shadow-[1px_1px_0_0_#111] transition ${
+              activeMode === "register" ? "bg-(--mint)" : "bg-white"
             }`}
             onClick={() => handleModeChange("register")}
             type="button"
@@ -86,7 +86,7 @@ function AuthModal({ authMode, isOpen, onClose, onModeChange }) {
         </div>
         <div className="mt-5 space-y-3">
           {activeMode === "register" && (
-            <label className="block text-sm font-black uppercase tracking-[0.1em]">
+            <label className="block text-sm font-black uppercase tracking-widest">
               Full name
               <input
                 className="mt-2 w-full border-[3px] border-black px-3 py-3 text-sm font-normal shadow-[3px_3px_0_0_#111] outline-none"
@@ -95,7 +95,7 @@ function AuthModal({ authMode, isOpen, onClose, onModeChange }) {
               />
             </label>
           )}
-          <label className="block text-sm font-black uppercase tracking-[0.1em]">
+          <label className="block text-sm font-black uppercase tracking-widest">
             Email
             <input
               className="mt-2 w-full border-[3px] border-black px-3 py-3 text-sm font-normal shadow-[3px_3px_0_0_#111] outline-none"
@@ -114,7 +114,7 @@ function AuthModal({ authMode, isOpen, onClose, onModeChange }) {
         </div>
         <div className="mt-6 flex flex-wrap gap-3">
           <button
-            className="border-[3px] border-black bg-[var(--berry)] px-4 py-3 text-sm font-extrabold uppercase tracking-[0.1em] text-white shadow-[2px_2px_0_0_#111]"
+            className="border-[3px] border-black bg-(--berry) px-4 py-3 text-sm font-extrabold uppercase tracking-widest text-white shadow-[2px_2px_0_0_#111]"
             type="button"
           >
             {activeMode === "login" ? "Sign in" : "Create account"}

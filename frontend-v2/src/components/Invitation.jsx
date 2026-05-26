@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
-import './Invitation.css';
+import { useEffect, useRef } from "react";
+import "../css/Invitation.css";
 
 export default function Invitation() {
   const sectionRef = useRef(null);
@@ -9,11 +9,11 @@ export default function Invitation() {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            entry.target.classList.add('invitation--visible');
+            entry.target.classList.add("invitation--visible");
           }
         });
       },
-      { threshold: 0.2 }
+      { threshold: 0.2 },
     );
 
     if (sectionRef.current) observer.observe(sectionRef.current);
@@ -32,7 +32,14 @@ export default function Invitation() {
           </div>
 
           <div className="invitation__content">
-            <span className="section-tag" style={{ background: 'rgba(255,255,255,0.1)', borderColor: 'rgba(255,255,255,0.15)', color: '#fff' }}>
+            <span
+              className="section-tag"
+              style={{
+                background: "rgba(255,255,255,0.1)",
+                borderColor: "rgba(255,255,255,0.15)",
+                color: "#fff",
+              }}
+            >
               Join the Community
             </span>
             <h2 className="invitation__title">
@@ -41,18 +48,36 @@ export default function Invitation() {
               <span className="invitation__title-accent">academic game?</span>
             </h2>
             <p className="invitation__subtitle">
-              Join hundreds of students who are already sharing and discovering resources. 
-              Create your free account today and start contributing to a growing knowledge base.
+              Join hundreds of students who are already sharing and discovering
+              resources. Create your free account today and start contributing
+              to a growing knowledge base.
             </p>
 
             <div className="invitation__cta">
-              <a href="#" className="invitation__btn invitation__btn--primary" id="cta-signup">
+              <a
+                href="#"
+                className="invitation__btn invitation__btn--primary"
+                id="cta-signup"
+              >
                 Create Free Account
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
                   <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>
               </a>
-              <a href="#" className="invitation__btn invitation__btn--ghost" id="cta-login">
+              <a
+                href="#"
+                className="invitation__btn invitation__btn--ghost"
+                id="cta-login"
+              >
                 Already have an account? Log In
               </a>
             </div>
@@ -60,19 +85,46 @@ export default function Invitation() {
             {/* Trust indicators */}
             <div className="invitation__trust">
               <div className="invitation__trust-item">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#22c55e"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
                 <span>100% Free to use</span>
               </div>
               <div className="invitation__trust-item">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#22c55e"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
                 <span>No credit card required</span>
               </div>
               <div className="invitation__trust-item">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#22c55e"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
                 <span>Start sharing in seconds</span>
