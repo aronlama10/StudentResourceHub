@@ -1,32 +1,23 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import "../css/Auth.css";
 
 export default function Auth() {
   const [mode, setMode] = useState("signup"); // 'login' or 'signup'
 
   return (
-    <div className="relative min-h-screen overflow-hidden px-6 py-10 flex items-center justify-center">
+    <div className="auth">
       {/* Background */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute rounded-full blur-[100px] opacity-[0.35] animate-authOrbFloat w-[500px] h-[500px] bg-[radial-gradient(circle,_#6366f1_0%,_transparent_70%)] top-[-10%] left-[-8%]" />
-        <div
-          className="absolute rounded-full blur-[100px] opacity-[0.35] animate-authOrbFloat w-[450px] h-[450px] bg-[radial-gradient(circle,_#06b6d4_0%,_transparent_70%)] bottom-[-10%] right-[-8%]"
-          style={{ animationDelay: "-7s" }}
-        />
-        <div
-          className="absolute rounded-full blur-[100px] opacity-[0.15] animate-authOrbFloat w-[350px] h-[350px] bg-[radial-gradient(circle,_#8b5cf6_0%,_transparent_70%)] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-          style={{ animationDelay: "-14s" }}
-        />
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(99,102,241,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(99,102,241,0.02)_1px,transparent_1px)] bg-[length:60px_60px] [mask-image:radial-gradient(ellipse_at_center,black_20%,transparent_70%)] [-webkit-mask-image:radial-gradient(ellipse_at_center,black_20%,transparent_70%)]" />
+      <div className="auth__bg">
+        <div className="auth__orb auth__orb--1" />
+        <div className="auth__orb auth__orb--2" />
+        <div className="auth__orb auth__orb--3" />
+        <div className="auth__grid" />
       </div>
 
-      <div className="relative z-[2] w-full max-w-[460px] flex flex-col gap-6 animate-authFadeIn">
+      <div className="auth__container">
         {/* Back to Home */}
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 text-[0.88rem] font-medium text-[var(--color-text-muted)] transition-colors duration-200 ease-[cubic-bezier(0.4,0,0.2,1)] self-start hover:text-[var(--color-text-primary)]"
-          id="auth-back-home"
-        >
+        <Link to="/" className="auth__back" id="auth-back-home">
           <svg
             width="18"
             height="18"
@@ -43,13 +34,10 @@ export default function Auth() {
         </Link>
 
         {/* Auth Card */}
-        <div
-          className="bg-[rgba(17,24,39,0.65)] backdrop-blur-[24px] backdrop-saturate-[1.3] [border:1px_solid_rgba(255,255,255,0.08)] rounded-[28px] px-9 py-11 shadow-[var(--shadow-lg)] max-[520px]:px-5 max-[520px]:py-8"
-          id="auth-card"
-        >
+        <div className="auth__card" id="auth-card">
           {/* Logo */}
-          <div className="flex items-center justify-center gap-[10px] font-[var(--font-heading)] text-[1.3rem] font-bold text-[var(--color-text-primary)] mb-6">
-            <span className="flex items-center">
+          <div className="auth__logo">
+            <span className="auth__logo-icon">
               <svg width="36" height="36" viewBox="0 0 32 32" fill="none">
                 <defs>
                   <linearGradient
@@ -89,53 +77,39 @@ export default function Auth() {
                 />
               </svg>
             </span>
-            <span>
+            <span className="auth__logo-text">
               Student<span className="gradient-text">Hub</span>
             </span>
           </div>
 
           {/* Title */}
-          <h1
-            className="text-[1.7rem] font-extrabold text-center mb-1.5 tracking-[-0.02em]"
-            id="auth-title"
-          >
+          <h1 className="auth__title" id="auth-title">
             {mode === "login" ? "Welcome back" : "Create your account"}
           </h1>
-          <p className="text-center text-[0.92rem] text-[var(--color-text-secondary)] mb-7 leading-[1.6]">
+          <p className="auth__subtitle">
             {mode === "login"
               ? "Sign in to access your dashboard and resources."
               : "Join the community and start sharing resources today."}
           </p>
 
           {/* Toggle Tabs */}
-          <div
-            className="flex relative bg-white/[0.04] border border-white/[0.06] rounded-full p-1 mb-7"
-            id="auth-tabs"
-          >
+          <div className="auth__tabs" id="auth-tabs">
             <button
-              className={`flex-1 py-2.5 text-[0.88rem] font-semibold rounded-full relative z-[2] transition-colors duration-200 ease-[cubic-bezier(0.4,0,0.2,1)] ${
-                mode === "login"
-                  ? "text-[var(--color-text-primary)]"
-                  : "text-[var(--color-text-muted)]"
-              }`}
+              className={`auth__tab${mode === "login" ? " auth__tab--active" : ""}`}
               onClick={() => setMode("login")}
               id="auth-tab-login"
             >
               Log In
             </button>
             <button
-              className={`flex-1 py-2.5 text-[0.88rem] font-semibold rounded-full relative z-[2] transition-colors duration-200 ease-[cubic-bezier(0.4,0,0.2,1)] ${
-                mode === "signup"
-                  ? "text-[var(--color-text-primary)]"
-                  : "text-[var(--color-text-muted)]"
-              }`}
+              className={`auth__tab${mode === "signup" ? " auth__tab--active" : ""}`}
               onClick={() => setMode("signup")}
               id="auth-tab-signup"
             >
               Sign Up
             </button>
             <div
-              className="absolute top-1 left-1 w-[calc(50%-4px)] h-[calc(100%-8px)] bg-[rgba(99,102,241,0.15)] border border-[rgba(99,102,241,0.25)] rounded-full transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] z-[1]"
+              className="auth__tab-indicator"
               style={{
                 transform:
                   mode === "login" ? "translateX(0)" : "translateX(100%)",
@@ -145,24 +119,18 @@ export default function Auth() {
 
           {/* Form */}
           <form
-            className="flex flex-col gap-5"
+            className="auth__form"
             id="auth-form"
             onSubmit={(e) => e.preventDefault()}
           >
             {mode === "signup" && (
-              <div
-                className="flex flex-col gap-1.5 animate-fieldSlideIn"
-                key="fullname"
-              >
-                <label
-                  className="text-[0.82rem] font-semibold text-[var(--color-text-secondary)] uppercase tracking-[0.05em]"
-                  htmlFor="auth-fullname"
-                >
+              <div className="auth__field auth__field--animate" key="fullname">
+                <label className="auth__label" htmlFor="auth-fullname">
                   Full Name
                 </label>
-                <div className="relative flex items-center group">
+                <div className="auth__input-wrap">
                   <svg
-                    className="absolute left-3.5 text-[var(--color-text-muted)] pointer-events-none transition-colors duration-200 group-focus-within:text-[var(--color-accent-primary)]"
+                    className="auth__input-icon"
                     width="18"
                     height="18"
                     viewBox="0 0 24 24"
@@ -178,7 +146,7 @@ export default function Auth() {
                   <input
                     type="text"
                     id="auth-fullname"
-                    className="w-full py-[13px] pr-[14px] pl-[44px] bg-white/[0.04] border border-white/[0.08] rounded-[12px] text-[var(--color-text-primary)] text-[0.92rem] font-[var(--font-body)] outline-none transition-all duration-200 placeholder:text-[var(--color-text-muted)] focus:border-[rgba(99,102,241,0.5)] focus:bg-[rgba(99,102,241,0.04)] focus:shadow-[0_0_0_3px_rgba(99,102,241,0.1)]"
+                    className="auth__input"
                     placeholder="Enter your full name"
                     autoComplete="name"
                   />
@@ -186,16 +154,13 @@ export default function Auth() {
               </div>
             )}
 
-            <div className="flex flex-col gap-1.5" key="email">
-              <label
-                className="text-[0.82rem] font-semibold text-[var(--color-text-secondary)] uppercase tracking-[0.05em]"
-                htmlFor="auth-email"
-              >
+            <div className="auth__field" key="email">
+              <label className="auth__label" htmlFor="auth-email">
                 Email Address
               </label>
-              <div className="relative flex items-center group">
+              <div className="auth__input-wrap">
                 <svg
-                  className="absolute left-3.5 text-[var(--color-text-muted)] pointer-events-none transition-colors duration-200 group-focus-within:text-[var(--color-accent-primary)]"
+                  className="auth__input-icon"
                   width="18"
                   height="18"
                   viewBox="0 0 24 24"
@@ -211,23 +176,20 @@ export default function Auth() {
                 <input
                   type="email"
                   id="auth-email"
-                  className="w-full py-[13px] pr-[14px] pl-[44px] bg-white/[0.04] border border-white/[0.08] rounded-[12px] text-[var(--color-text-primary)] text-[0.92rem] font-[var(--font-body)] outline-none transition-all duration-200 placeholder:text-[var(--color-text-muted)] focus:border-[rgba(99,102,241,0.5)] focus:bg-[rgba(99,102,241,0.04)] focus:shadow-[0_0_0_3px_rgba(99,102,241,0.1)]"
+                  className="auth__input"
                   placeholder="you@example.com"
                   autoComplete="email"
                 />
               </div>
             </div>
 
-            <div className="flex flex-col gap-1.5" key="password">
-              <label
-                className="text-[0.82rem] font-semibold text-[var(--color-text-secondary)] uppercase tracking-[0.05em]"
-                htmlFor="auth-password"
-              >
+            <div className="auth__field" key="password">
+              <label className="auth__label" htmlFor="auth-password">
                 Password
               </label>
-              <div className="relative flex items-center group">
+              <div className="auth__input-wrap">
                 <svg
-                  className="absolute left-3.5 text-[var(--color-text-muted)] pointer-events-none transition-colors duration-200 group-focus-within:text-[var(--color-accent-primary)]"
+                  className="auth__input-icon"
                   width="18"
                   height="18"
                   viewBox="0 0 24 24"
@@ -243,7 +205,7 @@ export default function Auth() {
                 <input
                   type="password"
                   id="auth-password"
-                  className="w-full py-[13px] pr-[14px] pl-[44px] bg-white/[0.04] border border-white/[0.08] rounded-[12px] text-[var(--color-text-primary)] text-[0.92rem] font-[var(--font-body)] outline-none transition-all duration-200 placeholder:text-[var(--color-text-muted)] focus:border-[rgba(99,102,241,0.5)] focus:bg-[rgba(99,102,241,0.04)] focus:shadow-[0_0_0_3px_rgba(99,102,241,0.1)]"
+                  className="auth__input"
                   placeholder={
                     mode === "login"
                       ? "Enter your password"
@@ -258,18 +220,15 @@ export default function Auth() {
 
             {mode === "signup" && (
               <div
-                className="flex flex-col gap-1.5 animate-fieldSlideIn"
+                className="auth__field auth__field--animate"
                 key="confirm-password"
               >
-                <label
-                  className="text-[0.82rem] font-semibold text-[var(--color-text-secondary)] uppercase tracking-[0.05em]"
-                  htmlFor="auth-confirm-password"
-                >
+                <label className="auth__label" htmlFor="auth-confirm-password">
                   Confirm Password
                 </label>
-                <div className="relative flex items-center group">
+                <div className="auth__input-wrap">
                   <svg
-                    className="absolute left-3.5 text-[var(--color-text-muted)] pointer-events-none transition-colors duration-200 group-focus-within:text-[var(--color-accent-primary)]"
+                    className="auth__input-icon"
                     width="18"
                     height="18"
                     viewBox="0 0 24 24"
@@ -284,7 +243,7 @@ export default function Auth() {
                   <input
                     type="password"
                     id="auth-confirm-password"
-                    className="w-full py-[13px] pr-[14px] pl-[44px] bg-white/[0.04] border border-white/[0.08] rounded-[12px] text-[var(--color-text-primary)] text-[0.92rem] font-[var(--font-body)] outline-none transition-all duration-200 placeholder:text-[var(--color-text-muted)] focus:border-[rgba(99,102,241,0.5)] focus:bg-[rgba(99,102,241,0.04)] focus:shadow-[0_0_0_3px_rgba(99,102,241,0.1)]"
+                    className="auth__input"
                     placeholder="Confirm your password"
                     autoComplete="new-password"
                   />
@@ -293,31 +252,19 @@ export default function Auth() {
             )}
 
             {mode === "login" && (
-              <div className="flex items-center justify-between">
-                <label className="relative flex items-center gap-2 text-[0.85rem] text-[var(--color-text-secondary)] cursor-pointer">
-                  <input
-                    type="checkbox"
-                    id="auth-remember"
-                    className="peer absolute opacity-0 w-0 h-0"
-                  />
-                  <span className="w-[18px] h-[18px] border border-white/[0.15] rounded-[4px] bg-white/[0.04] flex items-center justify-center transition-all duration-200 peer-checked:bg-[var(--color-accent-primary)] peer-checked:border-[var(--color-accent-primary)] after:content-[''] after:text-white after:text-[0.7rem] after:font-bold after:leading-none peer-checked:after:content-['✓']" />
+              <div className="auth__extras">
+                <label className="auth__remember">
+                  <input type="checkbox" id="auth-remember" />
+                  <span className="auth__checkbox" />
                   Remember me
                 </label>
-                <a
-                  href="#"
-                  className="text-[0.85rem] text-[var(--color-accent-primary)] font-medium transition-opacity duration-200 hover:opacity-80"
-                  id="auth-forgot"
-                >
+                <a href="#" className="auth__forgot" id="auth-forgot">
                   Forgot password?
                 </a>
               </div>
             )}
 
-            <button
-              type="submit"
-              className="flex items-center justify-center gap-2 w-full py-[15px] bg-[image:var(--gradient-cta)] bg-[length:200%_200%] bg-no-repeat text-white font-bold text-[0.95rem] rounded-[12px] transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] shadow-[0_4px_24px_rgba(99,102,241,0.3)] animate-gradientShift mt-1 hover:-translate-y-[2px] hover:shadow-[0_6px_32px_rgba(99,102,241,0.45)] active:translate-y-0"
-              id="auth-submit"
-            >
+            <button type="submit" className="auth__submit" id="auth-submit">
               {mode === "login" ? "Sign In" : "Create Account"}
               <svg
                 width="18"
@@ -359,16 +306,13 @@ export default function Auth() {
           </div> */}
 
           {/* Footer Toggle */}
-          <p
-            className="text-center text-[0.88rem] text-[var(--color-text-muted)] mt-6"
-            id="auth-toggle"
-          >
+          <p className="auth__toggle" id="auth-toggle">
             {mode === "login" ? (
               <>
                 Don&apos;t have an account?{" "}
                 <button
                   type="button"
-                  className="bg-transparent text-[var(--color-accent-primary)] font-semibold text-[0.88rem] p-0 transition-opacity duration-200 hover:opacity-80"
+                  className="auth__toggle-btn"
                   onClick={() => setMode("signup")}
                 >
                   Sign up for free
@@ -379,7 +323,7 @@ export default function Auth() {
                 Already have an account?{" "}
                 <button
                   type="button"
-                  className="bg-transparent text-[var(--color-accent-primary)] font-semibold text-[0.88rem] p-0 transition-opacity duration-200 hover:opacity-80"
+                  className="auth__toggle-btn"
                   onClick={() => setMode("login")}
                 >
                   Sign in
