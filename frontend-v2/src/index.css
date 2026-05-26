@@ -17,25 +17,9 @@
   --color-text-muted: #64748b;
 
   /* Accent Gradient — Vibrant indigo-to-cyan */
-  --gradient-accent: linear-gradient(
-    135deg,
-    #6366f1 0%,
-    #06b6d4 50%,
-    #8b5cf6 100%
-  );
-  --gradient-accent-hover: linear-gradient(
-    135deg,
-    #818cf8 0%,
-    #22d3ee 50%,
-    #a78bfa 100%
-  );
-  --gradient-hero: linear-gradient(
-    160deg,
-    #0a0e1a 0%,
-    #1e1b4b 40%,
-    #0f172a 70%,
-    #0a0e1a 100%
-  );
+  --gradient-accent: linear-gradient(135deg, #6366f1 0%, #06b6d4 50%, #8b5cf6 100%);
+  --gradient-accent-hover: linear-gradient(135deg, #818cf8 0%, #22d3ee 50%, #a78bfa 100%);
+  --gradient-hero: linear-gradient(160deg, #0a0e1a 0%, #1e1b4b 40%, #0f172a 70%, #0a0e1a 100%);
   --gradient-section-alt: linear-gradient(180deg, #0f172a 0%, #0a0e1a 100%);
   --gradient-cta: linear-gradient(135deg, #4f46e5, #7c3aed, #06b6d4);
 
@@ -63,8 +47,8 @@
   --radius-full: 9999px;
 
   /* Typography */
-  --font-heading: "Space Grotesk", sans-serif;
-  --font-body: "Inter", sans-serif;
+  --font-heading: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
 
   /* Spacing */
   --section-padding: 100px 0;
@@ -130,12 +114,7 @@ button {
   font-size: inherit;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
   line-height: 1.2;
   font-weight: 700;

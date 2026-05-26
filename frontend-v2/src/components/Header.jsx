@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import "../css/Header.css";
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import './Header.css';
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -8,62 +8,32 @@ export default function Header() {
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 40);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const navLinks = [
-    { label: "Features", href: "#features" },
-    { label: "How It Works", href: "#how-it-works" },
-    { label: "Community", href: "#invitation" },
+    { label: 'Features', href: '#features' },
+    { label: 'How It Works', href: '#how-it-works' },
+    { label: 'Community', href: '#invitation' },
   ];
 
   return (
-    <header
-      id="site-header"
-      className={`header${scrolled ? " header--scrolled" : ""}`}
-    >
+    <header id="site-header" className={`header${scrolled ? ' header--scrolled' : ''}`}>
       <div className="header__inner container">
         {/* Logo */}
         <a href="#" className="header__logo" id="logo">
           <span className="header__logo-icon">
             <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
               <defs>
-                <linearGradient
-                  id="logoGrad"
-                  x1="0"
-                  y1="0"
-                  x2="32"
-                  y2="32"
-                  gradientUnits="userSpaceOnUse"
-                >
+                <linearGradient id="logoGrad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
                   <stop offset="0%" stopColor="#6366f1" />
                   <stop offset="100%" stopColor="#06b6d4" />
                 </linearGradient>
               </defs>
-              <rect
-                x="2"
-                y="4"
-                width="28"
-                height="24"
-                rx="4"
-                stroke="url(#logoGrad)"
-                strokeWidth="2.5"
-                fill="none"
-              />
-              <path
-                d="M8 12h16M8 16h12M8 20h8"
-                stroke="url(#logoGrad)"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-              <circle
-                cx="26"
-                cy="22"
-                r="4"
-                fill="url(#logoGrad)"
-                opacity="0.7"
-              />
+              <rect x="2" y="4" width="28" height="24" rx="4" stroke="url(#logoGrad)" strokeWidth="2.5" fill="none" />
+              <path d="M8 12h16M8 16h12M8 20h8" stroke="url(#logoGrad)" strokeWidth="2" strokeLinecap="round" />
+              <circle cx="26" cy="22" r="4" fill="url(#logoGrad)" opacity="0.7" />
             </svg>
           </span>
           <span className="header__logo-text">
@@ -82,18 +52,10 @@ export default function Header() {
 
         {/* CTA */}
         <div className="header__actions">
-          <Link
-            to="/auth"
-            className="header__btn header__btn--ghost"
-            id="login-btn"
-          >
+          <Link to="/auth" className="header__btn header__btn--ghost" id="login-btn">
             Log In
           </Link>
-          <Link
-            to="/auth"
-            className="header__btn header__btn--primary"
-            id="signup-btn"
-          >
+          <Link to="/auth" className="header__btn header__btn--primary" id="signup-btn">
             Sign Up Free
             <span className="header__btn-shimmer" />
           </Link>
@@ -101,7 +63,7 @@ export default function Header() {
 
         {/* Mobile Menu Toggle */}
         <button
-          className={`header__burger${menuOpen ? " header__burger--active" : ""}`}
+          className={`header__burger${menuOpen ? ' header__burger--active' : ''}`}
           id="mobile-menu-toggle"
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="Toggle navigation menu"
@@ -113,9 +75,7 @@ export default function Header() {
       </div>
 
       {/* Mobile Menu */}
-      <div
-        className={`header__mobile-menu${menuOpen ? " header__mobile-menu--open" : ""}`}
-      >
+      <div className={`header__mobile-menu${menuOpen ? ' header__mobile-menu--open' : ''}`}>
         <nav className="header__mobile-nav">
           {navLinks.map((link) => (
             <a
@@ -128,18 +88,10 @@ export default function Header() {
             </a>
           ))}
           <div className="header__mobile-actions">
-            <Link
-              to="/auth"
-              className="header__btn header__btn--ghost"
-              onClick={() => setMenuOpen(false)}
-            >
+            <Link to="/auth" className="header__btn header__btn--ghost" onClick={() => setMenuOpen(false)}>
               Log In
             </Link>
-            <Link
-              to="/auth"
-              className="header__btn header__btn--primary"
-              onClick={() => setMenuOpen(false)}
-            >
+            <Link to="/auth" className="header__btn header__btn--primary" onClick={() => setMenuOpen(false)}>
               Sign Up Free
             </Link>
           </div>

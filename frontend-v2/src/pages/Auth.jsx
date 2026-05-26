@@ -1,9 +1,9 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import "../css/Auth.css";
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import './Auth.css';
 
 export default function Auth() {
-  const [mode, setMode] = useState("signup"); // 'login' or 'signup'
+  const [mode, setMode] = useState('signup'); // 'login' or 'signup'
 
   return (
     <div className="auth">
@@ -18,16 +18,7 @@ export default function Auth() {
       <div className="auth__container">
         {/* Back to Home */}
         <Link to="/" className="auth__back" id="auth-back-home">
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M19 12H5M12 19l-7-7 7-7" />
           </svg>
           Back to Home
@@ -40,41 +31,14 @@ export default function Auth() {
             <span className="auth__logo-icon">
               <svg width="36" height="36" viewBox="0 0 32 32" fill="none">
                 <defs>
-                  <linearGradient
-                    id="authLogoGrad"
-                    x1="0"
-                    y1="0"
-                    x2="32"
-                    y2="32"
-                    gradientUnits="userSpaceOnUse"
-                  >
+                  <linearGradient id="authLogoGrad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
                     <stop offset="0%" stopColor="#6366f1" />
                     <stop offset="100%" stopColor="#06b6d4" />
                   </linearGradient>
                 </defs>
-                <rect
-                  x="2"
-                  y="4"
-                  width="28"
-                  height="24"
-                  rx="4"
-                  stroke="url(#authLogoGrad)"
-                  strokeWidth="2.5"
-                  fill="none"
-                />
-                <path
-                  d="M8 12h16M8 16h12M8 20h8"
-                  stroke="url(#authLogoGrad)"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-                <circle
-                  cx="26"
-                  cy="22"
-                  r="4"
-                  fill="url(#authLogoGrad)"
-                  opacity="0.7"
-                />
+                <rect x="2" y="4" width="28" height="24" rx="4" stroke="url(#authLogoGrad)" strokeWidth="2.5" fill="none" />
+                <path d="M8 12h16M8 16h12M8 20h8" stroke="url(#authLogoGrad)" strokeWidth="2" strokeLinecap="round" />
+                <circle cx="26" cy="22" r="4" fill="url(#authLogoGrad)" opacity="0.7" />
               </svg>
             </span>
             <span className="auth__logo-text">
@@ -84,62 +48,43 @@ export default function Auth() {
 
           {/* Title */}
           <h1 className="auth__title" id="auth-title">
-            {mode === "login" ? "Welcome back" : "Create your account"}
+            {mode === 'login' ? 'Welcome back' : 'Create your account'}
           </h1>
           <p className="auth__subtitle">
-            {mode === "login"
-              ? "Sign in to access your dashboard and resources."
-              : "Join the community and start sharing resources today."}
+            {mode === 'login'
+              ? 'Sign in to access your dashboard and resources.'
+              : 'Join the community and start sharing resources today.'}
           </p>
 
           {/* Toggle Tabs */}
           <div className="auth__tabs" id="auth-tabs">
             <button
-              className={`auth__tab${mode === "login" ? " auth__tab--active" : ""}`}
-              onClick={() => setMode("login")}
+              className={`auth__tab${mode === 'login' ? ' auth__tab--active' : ''}`}
+              onClick={() => setMode('login')}
               id="auth-tab-login"
             >
               Log In
             </button>
             <button
-              className={`auth__tab${mode === "signup" ? " auth__tab--active" : ""}`}
-              onClick={() => setMode("signup")}
+              className={`auth__tab${mode === 'signup' ? ' auth__tab--active' : ''}`}
+              onClick={() => setMode('signup')}
               id="auth-tab-signup"
             >
               Sign Up
             </button>
             <div
               className="auth__tab-indicator"
-              style={{
-                transform:
-                  mode === "login" ? "translateX(0)" : "translateX(100%)",
-              }}
+              style={{ transform: mode === 'login' ? 'translateX(0)' : 'translateX(100%)' }}
             />
           </div>
 
           {/* Form */}
-          <form
-            className="auth__form"
-            id="auth-form"
-            onSubmit={(e) => e.preventDefault()}
-          >
-            {mode === "signup" && (
+          <form className="auth__form" id="auth-form" onSubmit={(e) => e.preventDefault()}>
+            {mode === 'signup' && (
               <div className="auth__field auth__field--animate" key="fullname">
-                <label className="auth__label" htmlFor="auth-fullname">
-                  Full Name
-                </label>
+                <label className="auth__label" htmlFor="auth-fullname">Full Name</label>
                 <div className="auth__input-wrap">
-                  <svg
-                    className="auth__input-icon"
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
+                  <svg className="auth__input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                     <circle cx="12" cy="7" r="4" />
                   </svg>
@@ -155,21 +100,9 @@ export default function Auth() {
             )}
 
             <div className="auth__field" key="email">
-              <label className="auth__label" htmlFor="auth-email">
-                Email Address
-              </label>
+              <label className="auth__label" htmlFor="auth-email">Email Address</label>
               <div className="auth__input-wrap">
-                <svg
-                  className="auth__input-icon"
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
+                <svg className="auth__input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
                   <polyline points="22,6 12,13 2,6" />
                 </svg>
@@ -184,21 +117,9 @@ export default function Auth() {
             </div>
 
             <div className="auth__field" key="password">
-              <label className="auth__label" htmlFor="auth-password">
-                Password
-              </label>
+              <label className="auth__label" htmlFor="auth-password">Password</label>
               <div className="auth__input-wrap">
-                <svg
-                  className="auth__input-icon"
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
+                <svg className="auth__input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                   <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                 </svg>
@@ -206,38 +127,17 @@ export default function Auth() {
                   type="password"
                   id="auth-password"
                   className="auth__input"
-                  placeholder={
-                    mode === "login"
-                      ? "Enter your password"
-                      : "Create a password"
-                  }
-                  autoComplete={
-                    mode === "login" ? "current-password" : "new-password"
-                  }
+                  placeholder={mode === 'login' ? 'Enter your password' : 'Create a password'}
+                  autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
                 />
               </div>
             </div>
 
-            {mode === "signup" && (
-              <div
-                className="auth__field auth__field--animate"
-                key="confirm-password"
-              >
-                <label className="auth__label" htmlFor="auth-confirm-password">
-                  Confirm Password
-                </label>
+            {mode === 'signup' && (
+              <div className="auth__field auth__field--animate" key="confirm-password">
+                <label className="auth__label" htmlFor="auth-confirm-password">Confirm Password</label>
                 <div className="auth__input-wrap">
-                  <svg
-                    className="auth__input-icon"
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
+                  <svg className="auth__input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
                   <input
@@ -251,31 +151,20 @@ export default function Auth() {
               </div>
             )}
 
-            {mode === "login" && (
+            {mode === 'login' && (
               <div className="auth__extras">
                 <label className="auth__remember">
                   <input type="checkbox" id="auth-remember" />
                   <span className="auth__checkbox" />
                   Remember me
                 </label>
-                <a href="#" className="auth__forgot" id="auth-forgot">
-                  Forgot password?
-                </a>
+                <a href="#" className="auth__forgot" id="auth-forgot">Forgot password?</a>
               </div>
             )}
 
             <button type="submit" className="auth__submit" id="auth-submit">
-              {mode === "login" ? "Sign In" : "Create Account"}
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
+              {mode === 'login' ? 'Sign In' : 'Create Account'}
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>
             </button>
@@ -307,25 +196,17 @@ export default function Auth() {
 
           {/* Footer Toggle */}
           <p className="auth__toggle" id="auth-toggle">
-            {mode === "login" ? (
+            {mode === 'login' ? (
               <>
-                Don&apos;t have an account?{" "}
-                <button
-                  type="button"
-                  className="auth__toggle-btn"
-                  onClick={() => setMode("signup")}
-                >
+                Don&apos;t have an account?{' '}
+                <button type="button" className="auth__toggle-btn" onClick={() => setMode('signup')}>
                   Sign up for free
                 </button>
               </>
             ) : (
               <>
-                Already have an account?{" "}
-                <button
-                  type="button"
-                  className="auth__toggle-btn"
-                  onClick={() => setMode("login")}
-                >
+                Already have an account?{' '}
+                <button type="button" className="auth__toggle-btn" onClick={() => setMode('login')}>
                   Sign in
                 </button>
               </>
