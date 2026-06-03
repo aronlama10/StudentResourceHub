@@ -1,0 +1,120 @@
+/* ============================================
+   DASHBOARD PROFILE
+   ============================================ */
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 24px;
+}
+
+.profile-card {
+  padding: 24px;
+  background: var(--color-bg-card);
+  border: var(--border-card);
+  border-radius: var(--radius-lg);
+  text-align: center;
+}
+
+.profile-card__avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  margin: 0 auto 12px;
+  background: var(--gradient-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.profile-card__meta {
+  color: var(--color-text-muted);
+  margin-bottom: 18px;
+}
+
+.profile-card__btn {
+  padding: 10px 18px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.04);
+  border: var(--border-subtle);
+  color: var(--color-text-secondary);
+  font-weight: 600;
+}
+
+.profile-panel {
+  padding: 24px;
+  background: var(--color-bg-card);
+  border: var(--border-card);
+  border-radius: var(--radius-lg);
+}
+
+.profile-panel__title {
+  margin-bottom: 18px;
+  font-size: 1.1rem;
+}
+
+.profile-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.profile-setting {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.03);
+  border: var(--border-subtle);
+}
+
+.profile-setting__label {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.profile-setting__btn {
+  padding: 8px 14px;
+  border-radius: var(--radius-full);
+  border: var(--border-subtle);
+  background: transparent;
+  color: var(--color-text-secondary);
+}
+
+@media (max-width: 1024px) {
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .profile-card,
+  .profile-panel {
+    padding: 20px;
+  }
+
+  .profile-setting {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .profile-setting__btn {
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-card,
+  .profile-panel {
+    padding: 16px;
+  }
+}
+

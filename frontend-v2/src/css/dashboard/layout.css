@@ -1,0 +1,64 @@
+/* ============================================
+   DASHBOARD LAYOUT
+   ============================================ */
+
+.dashboard {
+  display: flex;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  position: relative;
+}
+
+.dashboard__main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--gradient-section-alt);
+}
+
+.dashboard__content {
+  padding: 32px 40px 64px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+@media (max-width: 1024px) {
+  .dashboard {
+    flex-direction: column;
+    height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow: visible;
+  }
+
+  .dashboard__main {
+    flex: 1;
+    height: auto;
+    overflow: visible;
+    min-height: 0;
+  }
+
+  .dashboard__content {
+    padding: 24px;
+    overflow: visible;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard__content {
+    padding: 20px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard__content {
+    padding: 16px 12px;
+  }
+}

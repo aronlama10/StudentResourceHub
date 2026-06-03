@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import './Invitation.css';
+import '../css/Invitation.css';
 
 export default function Invitation() {
   const sectionRef = useRef(null);

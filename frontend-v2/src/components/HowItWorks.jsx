@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import './HowItWorks.css';
+import '../css/HowItWorks.css';
 
 const steps = [
   {

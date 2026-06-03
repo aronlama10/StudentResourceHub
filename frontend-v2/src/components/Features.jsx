@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import './Features.css';
+import '../css/Features.css';
 
 const features = [
   {

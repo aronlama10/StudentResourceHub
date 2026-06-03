@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import './Hero.css';
+import '../css/Hero.css';
 
 export default function Hero() {
   const heroRef = useRef(null);

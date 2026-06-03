@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import './Auth.css';
+import '../css/Auth.css';
 
 export default function Auth() {
   const [mode, setMode] = useState('signup'); // 'login' or 'signup'
