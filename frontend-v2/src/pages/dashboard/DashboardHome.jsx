@@ -1,10 +1,17 @@
+import { useEffect, useState } from "react";
 import "../../css/dashboard/home.css";
 
 function DashboardHome() {
+  const [LoggedInUser, setLoggedInUSer] = useState();
+
+  useEffect(() => {
+    setLoggedInUSer(localStorage.getItem('loggedInUser'));
+  }, [])
+
   return (
     <section className="dashboard-home">
       <div className="dashboard-home__welcome">
-        <h2 className="dashboard-home__greeting">Welcome back 👋</h2>
+        <h2 className="dashboard-home__greeting">Welcome {LoggedInUser} 👋</h2>
         <p className="dashboard-home__greeting-sub">
           Here's a quick snapshot of your activity.
         </p>
