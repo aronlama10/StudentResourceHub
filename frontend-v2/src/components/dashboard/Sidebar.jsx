@@ -10,8 +10,9 @@ import { Loader2 } from "lucide-react";
 const navItems = [
   { label: "Dashboard", path: "/dashboard", icon: "🏠" },
   { label: "Resources", path: "/dashboard/resources", icon: "📗" },
-  { label: "Upload", path: "/dashboard/upload", icon: "⬆️" },
   { label: "My Resources", path: "/dashboard/my-resources", icon: "📚" },
+  { label: "Saved Resources", path: "/dashboard/saved-resources", icon: "⭐"},
+  { label: "Upload", path: "/dashboard/upload", icon: "⬆️" },
   { label: "Profile", path: "/dashboard/profile", icon: "👤" },
 ];
 

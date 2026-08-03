@@ -384,7 +384,12 @@ export default function Signup() {
               id="signup-submit"
               disabled={loading}
             >
-              {loading ? "Creating Account..." : "Create Account"}
+              {loading ? (
+                <>
+                  <div className="loader"></div>
+                  <span>Creating Account</span>
+                </>
+              ) : "Create Account"}
               {!loading && (
                 <svg
                   width="18"

@@ -6,6 +6,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { handleError, handleSuccess } from "../utils.js";
 import { login } from "../services/authService.js";
+import { trackStudyStreak } from "../services/userService.js";
 
 export default function Signup() {
   const [formData, setFormData] = useState({
@@ -55,6 +56,13 @@ export default function Signup() {
         handleSuccess(message);
         localStorage.setItem("token", jwtToken);
         localStorage.setItem("loggedInUser", name);
+
+        try {
+          await trackStudyStreak();
+        } catch (streakErr) {
+          console.error("Could not update study streak", streakErr);
+        }
+
         setTimeout(() => {
           navigate("/dashboard");
         }, 1000);
@@ -155,7 +163,7 @@ export default function Signup() {
           </p>
 
           {/* Error Message */}
-          {error && <div className="auth__error">{error}</div>}
+          {/* {error && <div className="auth__error">{error}</div>} */}
 
           {/* Form */}
           <form className="auth__form" id="signup-form" onSubmit={handleSubmit}>
@@ -287,7 +295,14 @@ export default function Signup() {
               id="signup-submit"
               disabled={loading}
             >
-              {loading ? "Signing In..." : "Sign In"}
+              {loading ? (
+                <>
+                  <div className="loader"></div>
+                  <span>Signing In</span>
+                </>
+              ) : (
+                "Sign In"
+              )}
               {!loading && (
                 <svg
                   width="18"

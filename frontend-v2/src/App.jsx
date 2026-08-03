@@ -6,6 +6,7 @@ import DashboardLayout from "./components/dashboard/DashboardLayout";
 import DashboardHome from "./pages/dashboard/DashboardHome";
 import Upload from "./pages/dashboard/Upload";
 import MyResources from "./pages/dashboard/MyResources";
+import SavedResources from "./pages/dashboard/SavedResources";
 import Profile from "./pages/dashboard/Profile";
 import "./App.css";
 import Resources from "./pages/dashboard/Resources";
@@ -26,8 +27,9 @@ function App() {
           <Route path="/dashboard" element={<PrivateRoute><DashboardLayout /></PrivateRoute>}>
             <Route index element={<DashboardHome />} />
             <Route path="resources" element={<Resources />} />
-            <Route path="upload" element={<Upload />} />
             <Route path="my-resources" element={<MyResources />} />
+            <Route path="saved-resources" element={<SavedResources />} />
+            <Route path="upload" element={<Upload />} />
             <Route path="profile" element={<Profile />} />
           </Route>
         </Routes>

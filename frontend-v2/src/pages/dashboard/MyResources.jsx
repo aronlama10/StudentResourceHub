@@ -1,43 +1,44 @@
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../css/dashboard/resources.css";
+import { getResources, deleteResource } from "../../services/resourceService";
+import { handleSuccess, handleError } from "../../utils";
 
 function MyResources() {
   const navigate = useNavigate();
-  const myResources = [
-    {
-      title: "Database Systems Notes",
-      department: "CS & IT",
-      tag: "Upload",
-      meta: "COS204 · 24 pages",
-      author: "Suman Sharma",
-      time: "2 days ago",
-      excerpt:
-        "Concise notes on normalization, indexing, and transaction management with examples...",
-      labels: ["Notes", "Exam Prep"],
-    },
-    {
-      title: "Operating Systems Revision",
-      department: "CS & IT",
-      tag: "Saved",
-      meta: "COS302 · PDF",
-      author: "Suman Sharma",
-      time: "5 days ago",
-      excerpt:
-        "Revision guide covering scheduling, memory management, and file systems...",
-      labels: ["Revision", "Cheatsheet"],
-    },
-    {
-      title: "Networking Lab Manual",
-      department: "CS & IT",
-      tag: "Saved",
-      meta: "CSE210 · 12 labs",
-      author: "Suman Sharma",
-      time: "1 week ago",
-      excerpt:
-        "Lab manual with packet analysis tasks and step-by-step configurations...",
-      labels: ["Lab", "Guide"],
-    },
-  ];
+  const [myResources, setMyResources] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchMyResources = async () => {
+    try {
+      setLoading(true);
+      const response = await getResources({ myUploads: "true" });
+      if (response.success) {
+        const mapped = response.resources.map((res) => ({
+          ...res,
+          tag: res.department,
+          meta: res.courseCode
+            ? `${res.courseCode} · ${res.detail}`
+            : res.detail,
+          time: new Date(res.postedAt).toLocaleDateString(undefined, {
+            month: "short",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+        }));
+        setMyResources(mapped);
+      }
+    } catch (err) {
+      console.error("Error fetching my resources:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchMyResources();
+  }, []);
 
   const handleEdit = (resource) => {
     navigate("/dashboard/upload", {
@@ -45,6 +46,23 @@ function MyResources() {
         resource,
       },
     });
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this resource?")) {
+      try {
+        const response = await deleteResource(id);
+        if (response.success) {
+          handleSuccess(response.message || "Resource deleted successfully!");
+          fetchMyResources();
+        } else {
+          handleError(response.message || "Failed to delete resource");
+        }
+      } catch (err) {
+        console.error("Delete error:", err);
+        handleError("An error occurred while deleting the resource.");
+      }
+    }
   };
 
   return (
@@ -56,13 +74,13 @@ function MyResources() {
             Your saved and uploaded resources in one place.
           </p>
         </div>
-        <div className="dashboard-filters">
+        {/* <div className="dashboard-filters">
           <button className="dashboard-filter dashboard-filter--active">
             All
           </button>
           <button className="dashboard-filter">Uploads</button>
           <button className="dashboard-filter">Saved</button>
-        </div>
+        </div> */}
       </header>
 
       <div className="resource-grid">
@@ -108,8 +126,16 @@ function MyResources() {
             <div className="resource-card__divider" />
 
             <div className="resource-card__actions">
-              <button className="resource-card__action-btn">✏️ Edit</button>
-              <button className="resource-card__action-btn resource-card__action-btn--primary">
+              <button
+                className="resource-card__action-btn"
+                onClick={() => handleEdit(resource)}
+              >
+                ✏️ Edit
+              </button>
+              <button
+                className="resource-card__action-btn resource-card__action-btn--primary"
+                onClick={() => handleDelete(resource.id || resource._id)}
+              >
                 🗑️ Delete
               </button>
             </div>

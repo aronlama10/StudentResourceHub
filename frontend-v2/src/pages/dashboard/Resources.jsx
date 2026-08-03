@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../css/dashboard/resources.css";
+import { getResources } from "../../services/resourceService";
+import { toggleSaveResource, getSavedStatus } from "../../services/savedService";
+import { handleSuccess, handleError } from "../../utils";
 
 const departments = [
   "Computer Eng",
@@ -11,180 +14,29 @@ const departments = [
 
 const suggestions = ["DCOM suggestion", "C programming"];
 
-const allResources = [
-  // Computer Eng
-  {
-    title: "Microprocessor & Interfacing Notes",
-    tag: "Computer Eng",
-    meta: "COMP302 · 45 pages",
-    author: "Suman Sharma",
-    time: "2 hours ago",
-    excerpt:
-      "These notes cover all chapters from Unit 1 to Unit 5 with diagrams and practice questions included...",
-    labels: ["Notes", "Exam Prep"],
-  },
-  {
-    title: "Digital Logic Design Sheets",
-    tag: "Computer Eng",
-    meta: "COMP201 · PDF",
-    author: "Suman Sharma",
-    time: "5 hours ago",
-    excerpt:
-      "Quick-reference sheets with truth tables, K-maps, and circuit simplifications for fast revision...",
-    labels: ["Notes", "Quick Revision"],
-  },
-  {
-    title: "Computer Erchitecture Manual",
-    tag: "Computer Eng",
-    meta: "COMP304 · 14 labs",
-    author: "Suman Sharma",
-    time: "1 day ago",
-    excerpt:
-      "Lab manual with step-by-step experiments, register-level diagrams, and assessment checklists...",
-    labels: ["Lab", "Manual"],
-  },
-  // Civil Eng
-  {
-    title: "Structural Analysis Handbook",
-    tag: "Civil Eng",
-    meta: "CIVL301 · 80 pages",
-    author: "Suman Sharma",
-    time: "3 hours ago",
-    excerpt:
-      "Complete handbook covering slope-deflection, moment distribution, and influence lines...",
-    labels: ["Notes", "Handbook"],
-  },
-  {
-    title: "Fluid Mechanics Lab Guide",
-    tag: "Civil Eng",
-    meta: "CIVL202 · 10 labs",
-    author: "Suman Sharma",
-    time: "6 hours ago",
-    excerpt:
-      "Lab guide with experiment setup, safety notes, and result templates for each lab...",
-    labels: ["Lab", "Guide"],
-  },
-  {
-    title: "Surveying & Geomatics Revision",
-    tag: "Civil Eng",
-    meta: "CIVL105 · PDF",
-    author: "Suman Sharma",
-    time: "2 days ago",
-    excerpt:
-      "Revision pack covering leveling, traversing, and total station fundamentals...",
-    labels: ["Exam Prep", "Revision"],
-  },
-  // Computer Science
-  {
-    title: "Introduction to Algorithms Notes",
-    tag: "Computer Science",
-    meta: "CSCI204 · 32 pages",
-    author: "Suman Sharma",
-    time: "4 hours ago",
-    excerpt:
-      "Notes on asymptotic analysis, recursion, and classic sorting algorithms with examples...",
-    labels: ["Notes", "Exam Prep"],
-  },
-  {
-    title: "Theory of Computation Cheatsheet",
-    tag: "Computer Science",
-    meta: "CSCI310 · PDF",
-    author: "Suman Sharma",
-    time: "1 day ago",
-    excerpt:
-      "Cheatsheet for DFA/NFA conversions, pumping lemma, and CFG derivations...",
-    labels: ["Cheatsheet", "Quick Revision"],
-  },
-  {
-    title: "Compiler Design Reference",
-    tag: "Computer Science",
-    meta: "CSCI402 · 6 chapters",
-    author: "Suman Sharma",
-    time: "2 days ago",
-    excerpt:
-      "Reference guide on lexical analysis, parsing techniques, and intermediate code generation...",
-    labels: ["Reference", "Notes"],
-  },
-  // IT
-  {
-    title: "Web Technologies & Frameworks",
-    tag: "IT",
-    meta: "ITEC205 · 18 pages",
-    author: "Suman Sharma",
-    time: "5 hours ago",
-    excerpt:
-      "Overview of HTTP, REST, and popular frontend frameworks with small project examples...",
-    labels: ["Notes", "Overview"],
-  },
-  {
-    title: "Cloud Computing & DevOps Guide",
-    tag: "IT",
-    meta: "ITEC412 · PDF",
-    author: "Suman Sharma",
-    time: "8 hours ago",
-    excerpt:
-      "Guide on cloud models, CI/CD pipelines, and infrastructure automation essentials...",
-    labels: ["Guide", "DevOps"],
-  },
-  {
-    title: "Database Management Systems Guide",
-    tag: "IT",
-    meta: "ITEC302 · 12 chapters",
-    author: "Suman Sharma",
-    time: "2 days ago",
-    excerpt:
-      "Coverage of normalization, SQL optimization, and transaction management basics...",
-    labels: ["Guide", "Notes"],
-  },
-  // DCOM suggestion
-  {
-    title: "DCOM Architecture & Integration",
-    tag: "DCOM suggestion",
-    meta: "DCOM501 · Technical Guide",
-    author: "Suman Sharma",
-    time: "3 days ago",
-    excerpt:
-      "Architecture walkthrough for DCOM services with integration patterns and examples...",
-    labels: ["Guide", "Reference"],
-  },
-  {
-    title: "COM/DCOM Reference Guide",
-    tag: "DCOM suggestion",
-    meta: "DCOM502 · PDF Booklet",
-    author: "Suman Sharma",
-    time: "4 days ago",
-    excerpt:
-      "Reference booklet for COM interfaces, marshaling, and security settings...",
-    labels: ["Reference", "Notes"],
-  },
-  // C programming
-  {
-    title: "C Programming: Pointers & Memory",
-    tag: "C programming",
-    meta: "CPROG101 · 50 pages",
-    author: "Suman Sharma",
-    time: "6 hours ago",
-    excerpt:
-      "Pointers, memory layout, and dynamic allocation explained with diagrams and examples...",
-    labels: ["Notes", "Exam Prep"],
-  },
-  {
-    title: "Data Structures using C",
-    tag: "C programming",
-    meta: "CPROG102 · 25 chapters",
-    author: "Suman Sharma",
-    time: "1 day ago",
-    excerpt:
-      "Stack, queue, list, and tree implementations with complexity analysis...",
-    labels: ["Reference", "Notes"],
-  },
-];
-
 function Resources() {
   const navigate = useNavigate();
+  const [allResources, setAllResources] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [selectedFilter, setSelectedFilter] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [savedIds, setSavedIds] = useState(new Set());
+  const [savingIds, setSavingIds] = useState(new Set());
   const dropdownRef = useRef(null);
+
+  // Get the current user's ID from the JWT token
+  const getCurrentUserId = () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return null;
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      return payload._id;
+    } catch {
+      return null;
+    }
+  };
+
+  const currentUserId = getCurrentUserId();
 
   const toggleDropdown = () => {
     setIsDropdownOpen((prev) => !prev);
@@ -199,8 +51,89 @@ function Resources() {
     setSelectedFilter(null);
   };
 
+  // Fetch resources from backend
+  const fetchResources = async () => {
+    try {
+      setLoading(true);
+      const response = await getResources();
+      if (response.success) {
+        const mapped = response.resources.map((res) => ({
+          ...res,
+          tag: res.department,
+          meta: res.courseCode
+            ? `${res.courseCode} · ${res.detail}`
+            : res.detail,
+          time: new Date(res.postedAt).toLocaleDateString(undefined, {
+            month: "short",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+        }));
+        setAllResources(mapped);
+      }
+    } catch (err) {
+      console.error("Error fetching resources:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch saved status
+  const fetchSavedStatus = async () => {
+    try {
+      const response = await getSavedStatus();
+      if (response.success) {
+        setSavedIds(new Set(response.savedResourceIds));
+      }
+    } catch (err) {
+      console.error("Error fetching saved status:", err);
+    }
+  };
+
+  // Handle bookmark toggle
+  const handleToggleSave = async (resourceId) => {
+    if (savingIds.has(resourceId)) return; // Prevent double-click
+
+    setSavingIds((prev) => new Set(prev).add(resourceId));
+
+    try {
+      const response = await toggleSaveResource(resourceId);
+      if (response.success) {
+        setSavedIds((prev) => {
+          const next = new Set(prev);
+          if (response.saved) {
+            next.add(resourceId);
+          } else {
+            next.delete(resourceId);
+          }
+          return next;
+        });
+        if (response.saved) {
+          handleSuccess("Resource saved!");
+        } else {
+          handleSuccess("Resource unsaved.");
+        }
+      } else {
+        handleError(response.message || "Failed to toggle save");
+      }
+    } catch (err) {
+      console.error("Error toggling save:", err);
+      handleError("An error occurred while saving the resource.");
+    } finally {
+      setSavingIds((prev) => {
+        const next = new Set(prev);
+        next.delete(resourceId);
+        return next;
+      });
+    }
+  };
+
   // Close dropdown on click outside
   useEffect(() => {
+    fetchResources();
+    fetchSavedStatus();
+
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsDropdownOpen(false);
@@ -282,57 +215,97 @@ function Resources() {
       </header>
 
       <div className="resource-grid">
-        {filteredResources.map((resource) => (
-          <article className="resource-card" key={resource.title}>
-            <div className="resource-card__header">
-              <div className="resource-card__avatar" aria-hidden="true">
-                {resource.author
-                  .split(" ")
-                  .map((word) => word[0])
-                  .join("")
-                  .slice(0, 2)
-                  .toUpperCase()}
-              </div>
-              <div className="resource-card__author">
-                <p className="resource-card__author-name">{resource.author}</p>
-                <p className="resource-card__author-meta">
-                  {resource.tag} · {resource.time}
-                </p>
-              </div>
-            </div>
+        {filteredResources.map((resource) => {
+          const resourceId = resource.id || resource._id;
+          const isOwn = currentUserId && resource.authorId && resource.authorId.toString() === currentUserId.toString();
+          const isSaved = savedIds.has(resourceId);
+          const isSaving = savingIds.has(resourceId);
 
-            <div className="resource-card__divider" />
+          return (
+            <article className="resource-card" key={resource.title}>
+              <div className="resource-card__header">
+                <div className="resource-card__avatar" aria-hidden="true">
+                  {resource.author
+                    .split(" ")
+                    .map((word) => word[0])
+                    .join("")
+                    .slice(0, 2)
+                    .toUpperCase()}
+                </div>
+                <div className="resource-card__author">
+                  <p className="resource-card__author-name">{resource.author}</p>
+                  <p className="resource-card__author-meta">
+                    {resource.tag} · {resource.time}
+                  </p>
+                </div>
 
-            <div className="resource-card__content">
-              <h3 className="resource-card__title">
-                <span className="resource-card__title-icon" aria-hidden="true">
-                  📄
-                </span>
-                {resource.title}
-              </h3>
-              <p className="resource-card__meta">{resource.meta}</p>
-              <p className="resource-card__excerpt">"{resource.excerpt}"</p>
-              <div className="resource-card__labels">
-                {resource.labels.map((label) => (
-                  <span className="resource-card__label" key={label}>
-                    {label}
+                {/* Bookmark icon — only shown for resources not owned by current user */}
+                {!isOwn && (
+                  <button
+                    className={`resource-card__bookmark ${isSaved ? "resource-card__bookmark--active" : ""} ${isSaving ? "resource-card__bookmark--saving" : ""}`}
+                    onClick={() => handleToggleSave(resourceId)}
+                    disabled={isSaving}
+                    aria-label={isSaved ? "Unsave resource" : "Save resource"}
+                    title={isSaved ? "Unsave resource" : "Save resource"}
+                  >
+                    <span className="material-symbols-outlined">
+                      {isSaved ? "bookmark" : "bookmark_border"}
+                    </span>
+                  </button>
+                )}
+              </div>
+
+              <div className="resource-card__divider" />
+
+              <div className="resource-card__content">
+                <h3 className="resource-card__title">
+                  <span className="resource-card__title-icon" aria-hidden="true">
+                    📄
                   </span>
-                ))}
+                  {resource.title}
+                </h3>
+                <p className="resource-card__meta">{resource.meta}</p>
+                <p className="resource-card__excerpt">"{resource.excerpt}"</p>
+                <div className="resource-card__labels">
+                  {resource.labels.map((label) => (
+                    <span className="resource-card__label" key={label}>
+                      {label}
+                    </span>
+                  ))}
+                </div>
               </div>
-            </div>
 
-            <div className="resource-card__divider" />
+              <div className="resource-card__divider" />
 
-            <div className="resource-card__actions">
-              <button className="resource-card__action-btn">
-                👁️ View Resource
-              </button>
-              <button className="resource-card__action-btn resource-card__action-btn--primary">
-                📥 Download
-              </button>
-            </div>
-          </article>
-        ))}
+              <div className="resource-card__actions">
+                <button
+                  className="resource-card__action-btn"
+                  onClick={() => {
+                    if (resource.filePath) {
+                      const baseUrl =
+                        import.meta.env.VITE_API_URL || "http://localhost:8000";
+                      window.open(`${baseUrl}/${resource.filePath}`, "_blank");
+                    }
+                  }}
+                >
+                  👁️ View Resource
+                </button>
+                <button
+                  className="resource-card__action-btn resource-card__action-btn--primary"
+                  onClick={() => {
+                    if (resource.filePath) {
+                      const baseUrl =
+                        import.meta.env.VITE_API_URL || "http://localhost:8000";
+                      window.open(`${baseUrl}/${resource.filePath}`, "_blank");
+                    }
+                  }}
+                >
+                  📥 Download
+                </button>
+              </div>
+            </article>
+          );
+        })}
         {filteredResources.length === 0 && (
           <div className="no-resources-msg">
             <div className="no-resources-msg__icon">🔍</div>

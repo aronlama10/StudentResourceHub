@@ -17,7 +17,19 @@ function DashboardHeader({ onToggleSidebar }) {
   const title = pageTitles[location.pathname] ?? "Dashboard";
 
   useEffect(() => {
-    setLoggedInUSer(localStorage.getItem("loggedInUser"));
+    const handleUserUpdate = () => {
+      setLoggedInUSer(localStorage.getItem("loggedInUser"));
+    };
+
+    handleUserUpdate();
+
+    window.addEventListener("storage", handleUserUpdate);
+    window.addEventListener("local-storage-user", handleUserUpdate);
+
+    return () => {
+      window.removeEventListener("storage", handleUserUpdate);
+      window.removeEventListener("local-storage-user", handleUserUpdate);
+    };
   }, []);
 
   return (

@@ -1,11 +1,13 @@
 import { api } from "./api.js";
 
 /**
- * Fetch all resources.
+ * Fetch all resources (optionally filtered by query parameters).
+ * @param {Object} params - Query params e.g. { department, search, myUploads }
  * @returns {Promise<any>} List of resources
  */
-export const getResources = () => {
-  return api.get("/resources");
+export const getResources = (params = {}) => {
+  const queryString = new URLSearchParams(params).toString();
+  return api.get(`/resources${queryString ? `?${queryString}` : ""}`);
 };
 
 /**
@@ -18,22 +20,22 @@ export const getResourceById = (id) => {
 };
 
 /**
- * Create a new resource.
- * @param {Object} resourceData
+ * Create a new resource with a file upload.
+ * @param {FormData} resourceFormData
  * @returns {Promise<any>} Created resource
  */
-export const createResource = (resourceData) => {
-  return api.post("/resources", resourceData);
+export const createResource = (resourceFormData) => {
+  return api.postForm("/resources", resourceFormData);
 };
 
 /**
  * Update an existing resource.
  * @param {string} id
- * @param {Object} resourceData
+ * @param {FormData} resourceFormData
  * @returns {Promise<any>} Updated resource
  */
-export const updateResource = (id, resourceData) => {
-  return api.put(`/resources/${id}`, resourceData);
+export const updateResource = (id, resourceFormData) => {
+  return api.putForm(`/resources/${id}`, resourceFormData);
 };
 
 /**

@@ -6,7 +6,7 @@ const signup = async (req, res) => {
     try {
         const { name, email, password } = req.body;
         const user = await UserModel.findOne({ email });
-        if(user) {
+        if (user) {
             return res.status(409)
                 .json({ message: "User is already exist, you can login", success: false });
         }
@@ -32,12 +32,12 @@ const login = async (req, res) => {
         const { email, password } = req.body;
         const user = await UserModel.findOne({ email });
         const errorMsg = "Auth failed email or password is wrong";
-        if(!user) {
+        if (!user) {
             return res.status(403)
                 .json({ message: errorMsg, success: false });
         }
         const isPassEqual = await bcrypt.compare(password, user.password);
-        if(!isPassEqual) {
+        if (!isPassEqual) {
             return res.status(403)
                 .json({ message: errorMsg, success: false });
         }
@@ -45,7 +45,7 @@ const login = async (req, res) => {
             { email: user.email, _id: user._id },
             process.env.JWT_SECRET,
             { expiresIn: '24h' }
-        ) 
+        )
 
         res.status(200)
             .json({
@@ -65,6 +65,6 @@ const login = async (req, res) => {
 }
 
 module.exports = {
-    signup, 
+    signup,
     login
 }

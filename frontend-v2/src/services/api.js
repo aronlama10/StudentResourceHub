@@ -28,9 +28,39 @@ async function request(path, options = {}) {
   return response.json();
 }
 
+/**
+ * Base request handler for Form Data requests (multipart uploads).
+ * Omit default 'Content-Type' header to allow the browser to auto-assign it along with boundary.
+ */
+async function requestForm(path, options = {}) {
+  const url = `${API_BASE_URL}${path}`;
+
+  const headers = {
+    ...options.headers,
+  };
+
+  const token = localStorage.getItem("token");
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+
+  const response = await fetch(url, {
+    ...options,
+    headers,
+  });
+
+  return response.json();
+}
+
 export const api = {
   get: (path, options) => request(path, { ...options, method: "GET" }),
-  post: (path, body, options) => request(path, { ...options, method: "POST", body: JSON.stringify(body) }),
-  put: (path, body, options) => request(path, { ...options, method: "PUT", body: JSON.stringify(body) }),
+  post: (path, body, options) =>
+    request(path, { ...options, method: "POST", body: JSON.stringify(body) }),
+  put: (path, body, options) =>
+    request(path, { ...options, method: "PUT", body: JSON.stringify(body) }),
+  postForm: (path, formData, options) =>
+    requestForm(path, { ...options, method: "POST", body: formData }),
+  putForm: (path, formData, options) =>
+    requestForm(path, { ...options, method: "PUT", body: formData }),
   delete: (path, options) => request(path, { ...options, method: "DELETE" }),
 };
