@@ -1,0 +1,88 @@
+/* ============================================
+   THEME TOGGLE SYSTEM
+   ============================================ */
+
+.theme-toggle {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9990;
+  padding: 4px;
+  border-radius: var(--radius-full);
+  background: rgba(17, 24, 39, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  outline: none;
+  transition: all var(--transition-base);
+}
+
+.theme-toggle:hover {
+  transform: scale(1.06);
+  box-shadow: 0 6px 24px rgba(99, 102, 241, 0.35);
+  border-color: rgba(99, 102, 241, 0.4);
+}
+
+.theme-toggle:active {
+  transform: scale(0.96);
+}
+
+.theme-toggle__track {
+  position: relative;
+  width: 58px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 6px;
+  border-radius: var(--radius-full);
+}
+
+.theme-toggle__icon {
+  font-size: 14px;
+  line-height: 1;
+  z-index: 1;
+  user-select: none;
+  transition: opacity var(--transition-fast), transform var(--transition-fast);
+}
+
+.theme-toggle__thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--gradient-accent);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 2;
+}
+
+/* Light Theme Toggle Button Appearance */
+.theme-toggle--light {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  box-shadow: 0 4px 20px rgba(148, 163, 184, 0.25);
+}
+
+.theme-toggle--light .theme-toggle__thumb {
+  transform: translateX(28px);
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+/* Mobile responsive adjustments — position above FAB on resources page on mobile */
+@media (max-width: 480px) {
+  .theme-toggle {
+    bottom: 20px;
+    right: 20px;
+  }
+
+  /* When FAB is present on mobile (bottom right), nudge toggle to avoid overlap if needed */
+  .dashboard-section--resources ~ .theme-toggle,
+  body:has(.resources-fab) .theme-toggle {
+    bottom: 84px;
+  }
+}

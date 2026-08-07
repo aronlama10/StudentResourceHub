@@ -329,13 +329,6 @@ export default function Signup() {
           </p>
         </div>
       </div>
-
-      <ToastContainer
-        position="top-right"
-        closeOnClick
-        autoClose={3000}
-        theme="dark"
-      />
     </div>
   );
 }

@@ -91,12 +91,6 @@ function Sidebar({ isOpen, onClose }) {
           )}
         </button>
       </div>
-      <ToastContainer
-        position="top-right"
-        closeOnClick
-        autoClose={3000}
-        theme="dark"
-      />
     </aside>
   );
 }

@@ -263,3 +263,18 @@
     margin-bottom: 20px;
   }
 }
+
+/* --- Light Theme Overrides --- */
+[data-theme="light"] .dashboard-action {
+  background: rgba(15, 23, 42, 0.03);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+[data-theme="light"] .dashboard-action:hover {
+  background: rgba(15, 23, 42, 0.06);
+}
+
+[data-theme="light"] .activity-item:hover {
+  background: rgba(15, 23, 42, 0.04);
+}
+

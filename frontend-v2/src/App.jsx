@@ -13,28 +13,39 @@ import Resources from "./pages/dashboard/Resources";
 import 'react-toastify/dist/ReactToastify.css';
 import PrivateRoute from "./components/PrivateRoute";
 import PublicRoute from "./components/PublicRoute";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
+import { ThemeProvider } from "./context/ThemeContext";
+import ThemeToggle from "./components/ThemeToggle";
 
 function App() {
   return (
-    <BrowserRouter>
-      <div className="app">
-        <Routes>
-          <Route path="/" element={<PublicRoute><LandingPage /></PublicRoute>} />
-          <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
-          <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
+    <ThemeProvider>
+      <BrowserRouter>
+        <div className="app">
+          <ToastContainer
+            position="top-right"
+            closeOnClick
+            autoClose={3000}
+            theme="dark"
+          />
+          <ThemeToggle />
+          <Routes>
+            <Route path="/" element={<PublicRoute><LandingPage /></PublicRoute>} />
+            <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+            <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
 
-          <Route path="/dashboard" element={<PrivateRoute><DashboardLayout /></PrivateRoute>}>
-            <Route index element={<DashboardHome />} />
-            <Route path="resources" element={<Resources />} />
-            <Route path="my-resources" element={<MyResources />} />
-            <Route path="saved-resources" element={<SavedResources />} />
-            <Route path="upload" element={<Upload />} />
-            <Route path="profile" element={<Profile />} />
-          </Route>
-        </Routes>
-      </div>
-    </BrowserRouter>
+            <Route path="/dashboard" element={<PrivateRoute><DashboardLayout /></PrivateRoute>}>
+              <Route index element={<DashboardHome />} />
+              <Route path="resources" element={<Resources />} />
+              <Route path="my-resources" element={<MyResources />} />
+              <Route path="saved-resources" element={<SavedResources />} />
+              <Route path="upload" element={<Upload />} />
+              <Route path="profile" element={<Profile />} />
+            </Route>
+          </Routes>
+        </div>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 

@@ -129,10 +129,10 @@ function SavedResources() {
                 <button
                   className="resource-card__action-btn"
                   onClick={() => {
-                    if (resource.filePath) {
+                    if (resource.fileUrl) {
                       const baseUrl =
                         import.meta.env.VITE_API_URL || "http://localhost:8000";
-                      window.open(`${baseUrl}/${resource.filePath}`, "_blank");
+                      window.open(`${baseUrl}/${resource.fileUrl}`, "_blank");
                     }
                   }}
                 >

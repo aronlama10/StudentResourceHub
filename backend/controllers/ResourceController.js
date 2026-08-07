@@ -1,6 +1,27 @@
 const ResourceModel = require("../models/Resource");
-const fs = require("fs");
+const cloudinary = require("../config/cloudinary");
+const streamifier = require("streamifier");
 const path = require("path");
+
+const uploadToCloudinary = (buffer, resourceType) => {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder: "StudentResourceHub",
+        resource_type: resourceType,
+      },
+      (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      },
+    );
+
+    streamifier.createReadStream(buffer).pipe(uploadStream);
+  });
+};
 
 const createResource = async (req, res) => {
   try {
@@ -26,20 +47,60 @@ const createResource = async (req, res) => {
           : labels;
     }
 
+    console.log("Step 1");
+    console.log(req.file);
+
+    console.log("Step 2");
+
+    const ext = path.extname(req.file.originalname).toLowerCase();
+
+    const resourceType = [".jpg", ".jpeg", ".png", ".pdf"].includes(ext)
+      ? "image"
+      : "raw";
+
+    console.log("Original Name:", req.file.originalname);
+    console.log("Local Path:", req.file.path);
+    console.log("Size:", req.file.size);
+    console.log("Resource Type:", resourceType);
+
+    const uploadedFile = await uploadToCloudinary(
+      req.file.buffer,
+      resourceType,
+    );
+
+    console.log("Cloudinary upload successful:");
+    console.log(uploadedFile);
+    console.log("Step 3");
+    console.log(uploadedFile);
+
+    // const uploadedFile = await uploadToCloudinary(
+    //   req.file.buffer,
+    //   req.file.originalname,
+    // );
+
     const newResource = new ResourceModel({
       title,
-      author: req.user._id, // Set by ensureAuthenticated middleware
+      author: req.user._id,
       department,
       courseCode: normalizedCourseCode || "",
       detail,
       excerpt,
       labels: parsedLabels,
-      filePath: req.file.path.replace(/\\/g, "/"), // Store with forward slashes
+
+      fileUrl: uploadedFile.secure_url,
+      publicId: uploadedFile.public_id,
+      resourceType: uploadedFile.resource_type,
+
       fileName: req.file.originalname,
       fileSize: req.file.size,
     });
 
+    console.log("Step 4");
+    console.log(newResource);
+
     await newResource.save();
+
+    console.log("Step 5 - Saved successfully");
 
     res.status(201).json({
       message: "Resource uploaded successfully",
@@ -47,7 +108,20 @@ const createResource = async (req, res) => {
       resource: newResource,
     });
   } catch (err) {
-    console.error("Create Resource Error: ", err);
+    console.error("========== CREATE RESOURCE ERROR ==========");
+    console.dir(err, { depth: null });
+
+    if (err.response) {
+      console.log("Response:");
+      console.dir(err.response, { depth: null });
+    }
+
+    if (err.error) {
+      console.log("Error:");
+      console.dir(err.error, { depth: null });
+    }
+
+    console.error("==========================================");
     res.status(500).json({
       message: "Internal server error while uploading resource",
       success: false,
@@ -97,7 +171,20 @@ const getResources = async (req, res) => {
       resources: formattedResources,
     });
   } catch (err) {
-    console.error("Get Resources Error: ", err);
+    console.error("========== CREATE RESOURCE ERROR ==========");
+    console.dir(err, { depth: null });
+
+    if (err.response) {
+      console.log("Response:");
+      console.dir(err.response, { depth: null });
+    }
+
+    if (err.error) {
+      console.log("Error:");
+      console.dir(err.error, { depth: null });
+    }
+
+    console.error("==========================================");
     res.status(500).json({
       message: "Internal server error while fetching resources",
       success: false,
@@ -132,7 +219,20 @@ const getResourceById = async (req, res) => {
       resource: formatted,
     });
   } catch (err) {
-    console.error("Get Resource By Id Error: ", err);
+    console.error("========== CREATE RESOURCE ERROR ==========");
+    console.dir(err, { depth: null });
+
+    if (err.response) {
+      console.log("Response:");
+      console.dir(err.response, { depth: null });
+    }
+
+    if (err.error) {
+      console.log("Error:");
+      console.dir(err.error, { depth: null });
+    }
+
+    console.error("==========================================");
     res.status(500).json({
       message: "Internal server error while fetching resource details",
       success: false,
@@ -154,12 +254,10 @@ const updateResource = async (req, res) => {
 
     // Verify authorship
     if (resource.author.toString() !== req.user._id.toString()) {
-      return res
-        .status(403)
-        .json({
-          message: "Unauthorized to update this resource",
-          success: false,
-        });
+      return res.status(403).json({
+        message: "Unauthorized to update this resource",
+        success: false,
+      });
     }
 
     // Parse labels
@@ -177,14 +275,16 @@ const updateResource = async (req, res) => {
     // If new file is uploaded, remove old file and set new path
     let fileUpdate = {};
     if (req.file) {
-      if (resource.filePath) {
-        const oldFilePath = path.join(__dirname, "..", resource.filePath);
-        fs.unlink(oldFilePath, (err) => {
-          if (err) console.error("Error deleting old file: ", err);
+      if (resource.publicId) {
+        await cloudinary.uploader.destroy(resource.publicId, {
+          resource_type: resource.resourceType || "raw",
+          type: "upload",
         });
       }
       fileUpdate = {
-        filePath: req.file.path.replace(/\\/g, "/"),
+        fileUrl: req.file.path,
+        publicId: req.file.filename,
+        resourceType: "raw",
         fileName: req.file.originalname,
         fileSize: req.file.size,
       };
@@ -211,7 +311,20 @@ const updateResource = async (req, res) => {
       resource: updatedResource,
     });
   } catch (err) {
-    console.error("Update Resource Error: ", err);
+    console.error("========== CREATE RESOURCE ERROR ==========");
+    console.dir(err, { depth: null });
+
+    if (err.response) {
+      console.log("Response:");
+      console.dir(err.response, { depth: null });
+    }
+
+    if (err.error) {
+      console.log("Error:");
+      console.dir(err.error, { depth: null });
+    }
+
+    console.error("==========================================");
     res.status(500).json({
       message: "Internal server error while updating resource",
       success: false,
@@ -231,19 +344,17 @@ const deleteResource = async (req, res) => {
 
     // Verify authorship
     if (resource.author.toString() !== req.user._id.toString()) {
-      return res
-        .status(403)
-        .json({
-          message: "Unauthorized to delete this resource",
-          success: false,
-        });
+      return res.status(403).json({
+        message: "Unauthorized to delete this resource",
+        success: false,
+      });
     }
 
     // Delete file from disk
-    if (resource.filePath) {
-      const filePathOnDisk = path.join(__dirname, "..", resource.filePath);
-      fs.unlink(filePathOnDisk, (err) => {
-        if (err) console.error("Error deleting file from disk: ", err);
+    if (resource.publicId) {
+      await cloudinary.uploader.destroy(resource.publicId, {
+        resource_type: resource.resourceType || "raw",
+        type: "upload",
       });
     }
 
@@ -254,7 +365,20 @@ const deleteResource = async (req, res) => {
       success: true,
     });
   } catch (err) {
-    console.error("Delete Resource Error: ", err);
+    console.error("========== CREATE RESOURCE ERROR ==========");
+    console.dir(err, { depth: null });
+
+    if (err.response) {
+      console.log("Response:");
+      console.dir(err.response, { depth: null });
+    }
+
+    if (err.error) {
+      console.log("Error:");
+      console.dir(err.error, { depth: null });
+    }
+
+    console.error("==========================================");
     res.status(500).json({
       message: "Internal server error while deleting resource",
       success: false,

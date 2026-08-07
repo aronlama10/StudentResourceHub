@@ -143,3 +143,16 @@
   }
 }
 
+/* --- Light Theme Overrides --- */
+[data-theme="light"] .form-input {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  color: var(--color-text-primary);
+}
+
+[data-theme="light"] .form-select option {
+  background: #ffffff;
+  color: var(--color-text-primary);
+}
+
+

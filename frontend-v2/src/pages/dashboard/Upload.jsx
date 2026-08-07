@@ -23,7 +23,7 @@ function Upload() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     author: localStorage.getItem("loggedInUser") || "",
-    department: "Computer Eng",
+    department: "Computer Engineering",
     postedAt: getCurrentDateTimeLocal(),
     title: "",
     courseCode: "",
@@ -34,6 +34,7 @@ function Upload() {
 
   const isEditing = Boolean(location.state?.resource);
 
+  const [loading, setLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [dragActive, setDragActive] = useState(false);
 
@@ -83,7 +84,7 @@ function Upload() {
 
     setFormData({
       author: resource.author || "",
-      department: resource.department || "Computer Eng",
+      department: resource.department || "Computer Engineering",
       postedAt: formatDateTimeLocal(resource.postedAt || resource.time),
       title: resource.title || "",
       courseCode: resource.courseCode || courseCode || "",
@@ -114,6 +115,7 @@ function Upload() {
     }
 
     try {
+      setLoading(true);
       const data = new FormData();
       data.append("title", formData.title);
       data.append("department", formData.department);
@@ -139,14 +141,19 @@ function Upload() {
       }
 
       if (response.success) {
-        handleSuccess(response.message || "Resource saved successfully!");
-        navigate("/dashboard/resources");
+        navigate("/dashboard/resources", {
+          state: {
+            successMessage: "Resources has been uploaded",
+          },
+        });
       } else {
         handleError(response.message || "Something went wrong.");
       }
     } catch (err) {
       console.error(err);
       handleError("An error occurred while saving the resource.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -348,11 +355,20 @@ function Upload() {
         </div>
 
         <div className="upload-actions">
-          <button className="secondary-btn" type="button">
+          <button className="secondary-btn" type="button" disabled={loading}>
             Preview Card
           </button>
-          <button className="primary-btn" type="submit">
-            {isEditing ? "Save Changes" : "Publish Resource"}
+          <button className="primary-btn" type="submit" disabled={loading}>
+            {loading ? (
+              <span style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
+                <span className="btn-spinner" />
+                <span>{isEditing ? "Saving..." : "Publishing..."}</span>
+              </span>
+            ) : isEditing ? (
+              "Save Changes"
+            ) : (
+              "Publish Resource"
+            )}
           </button>
         </div>
       </form>

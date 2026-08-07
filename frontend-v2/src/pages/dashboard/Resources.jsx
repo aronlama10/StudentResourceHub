@@ -1,21 +1,25 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "../../css/dashboard/resources.css";
 import { getResources } from "../../services/resourceService";
-import { toggleSaveResource, getSavedStatus } from "../../services/savedService";
+import {
+  toggleSaveResource,
+  getSavedStatus,
+} from "../../services/savedService";
 import { handleSuccess, handleError } from "../../utils";
 
 const departments = [
-  "Computer Eng",
-  "Civil Eng",
+  "Computer Engineering",
+  "Civil Engineering",
   "CS & IT",
-  "Architecture Eng",
+  "Architecture Engineering",
 ];
 
 const suggestions = ["DCOM suggestion", "C programming"];
 
 function Resources() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [allResources, setAllResources] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedFilter, setSelectedFilter] = useState(null);
@@ -129,6 +133,14 @@ function Resources() {
     }
   };
 
+  // Display success toast when redirected after uploading/saving
+  useEffect(() => {
+    if (location.state?.successMessage) {
+      handleSuccess(location.state.successMessage);
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.state, navigate]);
+
   // Close dropdown on click outside
   useEffect(() => {
     fetchResources();
@@ -148,6 +160,29 @@ function Resources() {
   const filteredResources = selectedFilter
     ? allResources.filter((resource) => resource.tag === selectedFilter)
     : allResources;
+
+  const handleViewResource = (resource) => {
+    if (!resource.fileUrl) {
+      handleError("Resource file not found.");
+      return;
+    }
+
+    window.open(resource.fileUrl, "_blank", "noopener,noreferrer");
+  };
+
+  const handleDownload = (resource) => {
+    if (!resource.fileUrl) {
+      handleError("File URL is not available.");
+      return;
+    }
+
+    const downloadUrl = resource.fileUrl.replace(
+      "/upload/",
+      "/upload/fl_attachment/",
+    );
+
+    window.location.href = downloadUrl;
+  };
 
   return (
     <section className="dashboard-section dashboard-section--resources">
@@ -217,7 +252,10 @@ function Resources() {
       <div className="resource-grid">
         {filteredResources.map((resource) => {
           const resourceId = resource.id || resource._id;
-          const isOwn = currentUserId && resource.authorId && resource.authorId.toString() === currentUserId.toString();
+          const isOwn =
+            currentUserId &&
+            resource.authorId &&
+            resource.authorId.toString() === currentUserId.toString();
           const isSaved = savedIds.has(resourceId);
           const isSaving = savingIds.has(resourceId);
 
@@ -233,7 +271,9 @@ function Resources() {
                     .toUpperCase()}
                 </div>
                 <div className="resource-card__author">
-                  <p className="resource-card__author-name">{resource.author}</p>
+                  <p className="resource-card__author-name">
+                    {resource.author}
+                  </p>
                   <p className="resource-card__author-meta">
                     {resource.tag} · {resource.time}
                   </p>
@@ -259,7 +299,10 @@ function Resources() {
 
               <div className="resource-card__content">
                 <h3 className="resource-card__title">
-                  <span className="resource-card__title-icon" aria-hidden="true">
+                  <span
+                    className="resource-card__title-icon"
+                    aria-hidden="true"
+                  >
                     📄
                   </span>
                   {resource.title}
@@ -280,25 +323,13 @@ function Resources() {
               <div className="resource-card__actions">
                 <button
                   className="resource-card__action-btn"
-                  onClick={() => {
-                    if (resource.filePath) {
-                      const baseUrl =
-                        import.meta.env.VITE_API_URL || "http://localhost:8000";
-                      window.open(`${baseUrl}/${resource.filePath}`, "_blank");
-                    }
-                  }}
+                  onClick={() => handleViewResource(resource)}
                 >
                   👁️ View Resource
                 </button>
                 <button
                   className="resource-card__action-btn resource-card__action-btn--primary"
-                  onClick={() => {
-                    if (resource.filePath) {
-                      const baseUrl =
-                        import.meta.env.VITE_API_URL || "http://localhost:8000";
-                      window.open(`${baseUrl}/${resource.filePath}`, "_blank");
-                    }
-                  }}
+                  onClick={() => handleDownload(resource)}
                 >
                   📥 Download
                 </button>

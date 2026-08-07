@@ -540,3 +540,36 @@
     transform: rotate(360deg);
   }
 }
+
+/* --- Light Theme Overrides --- */
+[data-theme="light"] .auth__card {
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 10px 40px rgba(148, 163, 184, 0.25);
+}
+
+[data-theme="light"] .auth__tabs {
+  background: rgba(15, 23, 42, 0.04);
+}
+
+[data-theme="light"] .auth__input {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+[data-theme="light"] .auth__social-btn {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+[data-theme="light"] .auth__social-btn:hover {
+  background: rgba(241, 245, 249, 1);
+}
+
+[data-theme="light"] .auth__checkbox {
+  border-color: rgba(148, 163, 184, 0.4);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+[data-theme="light"] .auth__orb {
+  opacity: 0.2;
+}

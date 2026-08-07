@@ -118,3 +118,15 @@
   }
 }
 
+/* --- Light Theme Overrides --- */
+[data-theme="light"] .profile-card__btn {
+  background: rgba(15, 23, 42, 0.04);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+[data-theme="light"] .profile-setting {
+  background: rgba(15, 23, 42, 0.03);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+
