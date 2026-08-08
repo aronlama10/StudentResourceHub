@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "../../css/dashboard/resources.css";
-import { getSavedResources, toggleSaveResource } from "../../services/savedService";
+import {
+  getSavedResources,
+  toggleSaveResource,
+} from "../../services/savedService";
 import { handleSuccess, handleError } from "../../utils";
 
 function SavedResources() {
@@ -45,7 +48,7 @@ function SavedResources() {
         handleSuccess("Resource unsaved.");
         // Remove from local state instantly
         setSavedResources((prev) =>
-          prev.filter((r) => (r.id || r._id) !== resourceId)
+          prev.filter((r) => (r.id || r._id) !== resourceId),
         );
       } else {
         handleError(response.message || "Failed to unsave resource");
@@ -54,6 +57,20 @@ function SavedResources() {
       console.error("Unsave error:", err);
       handleError("An error occurred while unsaving the resource.");
     }
+  };
+
+  const handleDownload = (resource) => {
+    if (!resource.fileUrl) {
+      handleError("File URL is not available.");
+      return;
+    }
+
+    const downloadUrl = resource.fileUrl.replace(
+      "/upload/",
+      "/upload/fl_attachment/",
+    );
+
+    window.location.href = downloadUrl;
   };
 
   return (
@@ -87,7 +104,9 @@ function SavedResources() {
                     .toUpperCase()}
                 </div>
                 <div className="resource-card__author">
-                  <p className="resource-card__author-name">{resource.author}</p>
+                  <p className="resource-card__author-name">
+                    {resource.author}
+                  </p>
                   <p className="resource-card__author-meta">
                     {resource.tag} · {resource.time}
                   </p>
@@ -107,7 +126,10 @@ function SavedResources() {
 
               <div className="resource-card__content">
                 <h3 className="resource-card__title">
-                  <span className="resource-card__title-icon" aria-hidden="true">
+                  <span
+                    className="resource-card__title-icon"
+                    aria-hidden="true"
+                  >
                     📄
                   </span>
                   {resource.title}
@@ -130,19 +152,36 @@ function SavedResources() {
                   className="resource-card__action-btn"
                   onClick={() => {
                     if (resource.fileUrl) {
-                      const baseUrl =
-                        import.meta.env.VITE_API_URL || "http://localhost:8000";
-                      window.open(`${baseUrl}/${resource.fileUrl}`, "_blank");
+                      window.open(
+                        resource.fileUrl,
+                        "_blank",
+                        "noopener,noreferrer",
+                      );
+                    } else {
+                      handleError("Resource file not found.");
                     }
                   }}
                 >
                   👁️ View Resource
                 </button>
                 <button
+                  className="resource-card__action-btn resource-card__action-btn--primary"
+                  onClick={() => handleDownload(resource)}
+                >
+                  ⬇️ Download
+                </button>
+                <button
                   className="resource-card__action-btn resource-card__action-btn--danger"
                   onClick={() => handleUnsave(resourceId)}
                 >
-                  <span className="material-symbols-outlined" style={{ fontSize: "18px", verticalAlign: "middle", marginRight: "4px" }}>
+                  <span
+                    className="material-symbols-outlined"
+                    style={{
+                      fontSize: "18px",
+                      verticalAlign: "middle",
+                      marginRight: "4px",
+                    }}
+                  >
                     bookmark_remove
                   </span>
                   Unsave
@@ -155,7 +194,10 @@ function SavedResources() {
         {!loading && savedResources.length === 0 && (
           <div className="no-resources-msg">
             <div className="no-resources-msg__icon">
-              <span className="material-symbols-outlined" style={{ fontSize: "3rem", color: "var(--color-text-muted)" }}>
+              <span
+                className="material-symbols-outlined"
+                style={{ fontSize: "3rem", color: "var(--color-text-muted)" }}
+              >
                 bookmarks
               </span>
             </div>

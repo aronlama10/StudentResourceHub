@@ -238,8 +238,7 @@ const getResourceById = async (req, res) => {
 const updateResource = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, department, courseCode, detail, excerpt, labels } =
-      req.body;
+    const { title, department, courseCode, detail, excerpt, labels } = req.body;
 
     const resource = await ResourceModel.findById(id);
 
@@ -290,7 +289,7 @@ const updateResource = async (req, res) => {
       // Upload new file to Cloudinary
       const uploadedFile = await uploadToCloudinary(
         req.file.buffer,
-        resourceType
+        resourceType,
       );
 
       console.log("New file uploaded to Cloudinary:");
@@ -322,9 +321,7 @@ const updateResource = async (req, res) => {
         title: title || resource.title,
         department: department || resource.department,
         courseCode:
-          courseCode === undefined
-            ? resource.courseCode
-            : courseCode.trim(),
+          courseCode === undefined ? resource.courseCode : courseCode.trim(),
         detail: detail || resource.detail,
         excerpt: excerpt || resource.excerpt,
         labels: parsedLabels,
@@ -332,7 +329,7 @@ const updateResource = async (req, res) => {
       },
       {
         new: true,
-      }
+      },
     );
 
     res.status(200).json({
@@ -370,7 +367,7 @@ const deleteResource = async (req, res) => {
       });
     }
 
-    // Delete file from disk
+    // Delete file from cloudinary
     if (resource.publicId) {
       await cloudinary.uploader.destroy(resource.publicId, {
         resource_type: resource.resourceType || "raw",
@@ -385,7 +382,7 @@ const deleteResource = async (req, res) => {
       success: true,
     });
   } catch (err) {
-    console.error("========== CREATE RESOURCE ERROR ==========");
+    console.error("========== DELETE RESOURCE ERROR ==========");
     console.dir(err, { depth: null });
 
     if (err.response) {

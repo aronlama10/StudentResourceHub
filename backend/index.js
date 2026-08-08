@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
@@ -7,7 +9,6 @@ const AuthRouter = require('./routes/AuthRouter');
 const ResourceRouter = require('./routes/ResourceRouter');
 const UserRouter = require('./routes/UserRouter');
 
-require('dotenv').config();
 require('./models/db')
 const PORT = process.env.PORT || 8000;
 
