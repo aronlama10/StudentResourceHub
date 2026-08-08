@@ -13,6 +13,7 @@ const departments = [
   "Civil Engineering",
   "CS & IT",
   "Architecture Engineering",
+  "Electrical & Electronics Engineering"
 ];
 
 const suggestions = ["DCOM suggestion", "C programming"];

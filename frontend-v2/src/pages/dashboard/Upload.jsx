@@ -200,8 +200,9 @@ function Upload() {
               >
                 <option>Computer Engineering</option>
                 <option>Civil Engineering</option>
+                <option>CS & IT</option>
                 <option>Architecture Engineering</option>
-                <option>Electrical Engineering</option>
+                <option>Electrical & Electronics Engineering</option>
               </select>
             </label>
           </div>
@@ -360,7 +361,13 @@ function Upload() {
           </button>
           <button className="primary-btn" type="submit" disabled={loading}>
             {loading ? (
-              <span style={{ display: "inline-flex", alignItems: "center", gap: "8px" }}>
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "8px",
+                }}
+              >
                 <span className="btn-spinner" />
                 <span>{isEditing ? "Saving..." : "Publishing..."}</span>
               </span>

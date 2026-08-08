@@ -58,11 +58,6 @@ const createResource = async (req, res) => {
       ? "image"
       : "raw";
 
-    console.log("Original Name:", req.file.originalname);
-    console.log("Local Path:", req.file.path);
-    console.log("Size:", req.file.size);
-    console.log("Resource Type:", resourceType);
-
     const uploadedFile = await uploadToCloudinary(
       req.file.buffer,
       resourceType,
@@ -243,13 +238,16 @@ const getResourceById = async (req, res) => {
 const updateResource = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, department, courseCode, detail, excerpt, labels } = req.body;
+    const { title, department, courseCode, detail, excerpt, labels } =
+      req.body;
 
     const resource = await ResourceModel.findById(id);
+
     if (!resource) {
-      return res
-        .status(404)
-        .json({ message: "Resource not found", success: false });
+      return res.status(404).json({
+        message: "Resource not found",
+        success: false,
+      });
     }
 
     // Verify authorship
@@ -262,6 +260,7 @@ const updateResource = async (req, res) => {
 
     // Parse labels
     let parsedLabels = resource.labels;
+
     if (labels) {
       parsedLabels =
         typeof labels === "string"
@@ -272,19 +271,46 @@ const updateResource = async (req, res) => {
           : labels;
     }
 
-    // If new file is uploaded, remove old file and set new path
+    // Keep existing file information by default
     let fileUpdate = {};
+
+    // If a new file is uploaded
     if (req.file) {
+      const ext = path.extname(req.file.originalname).toLowerCase();
+
+      const resourceType = [".jpg", ".jpeg", ".png", ".pdf"].includes(ext)
+        ? "image"
+        : "raw";
+
+      console.log("Updating file:");
+      console.log("Original name:", req.file.originalname);
+      console.log("Size:", req.file.size);
+      console.log("Resource type:", resourceType);
+
+      // Upload new file to Cloudinary
+      const uploadedFile = await uploadToCloudinary(
+        req.file.buffer,
+        resourceType
+      );
+
+      console.log("New file uploaded to Cloudinary:");
+      console.log(uploadedFile);
+
+      // Delete old file after successful upload
       if (resource.publicId) {
         await cloudinary.uploader.destroy(resource.publicId, {
           resource_type: resource.resourceType || "raw",
           type: "upload",
         });
+
+        console.log("Old file deleted from Cloudinary");
       }
+
+      // Store new Cloudinary information
       fileUpdate = {
-        fileUrl: req.file.path,
-        publicId: req.file.filename,
-        resourceType: "raw",
+        fileUrl: uploadedFile.secure_url,
+        publicId: uploadedFile.public_id,
+        resourceType: uploadedFile.resource_type,
         fileName: req.file.originalname,
         fileSize: req.file.size,
       };
@@ -296,13 +322,17 @@ const updateResource = async (req, res) => {
         title: title || resource.title,
         department: department || resource.department,
         courseCode:
-          courseCode === undefined ? resource.courseCode : courseCode.trim(),
+          courseCode === undefined
+            ? resource.courseCode
+            : courseCode.trim(),
         detail: detail || resource.detail,
         excerpt: excerpt || resource.excerpt,
         labels: parsedLabels,
         ...fileUpdate,
       },
-      { new: true },
+      {
+        new: true,
+      }
     );
 
     res.status(200).json({
@@ -311,20 +341,10 @@ const updateResource = async (req, res) => {
       resource: updatedResource,
     });
   } catch (err) {
-    console.error("========== CREATE RESOURCE ERROR ==========");
+    console.error("========== UPDATE RESOURCE ERROR ==========");
     console.dir(err, { depth: null });
-
-    if (err.response) {
-      console.log("Response:");
-      console.dir(err.response, { depth: null });
-    }
-
-    if (err.error) {
-      console.log("Error:");
-      console.dir(err.error, { depth: null });
-    }
-
     console.error("==========================================");
+
     res.status(500).json({
       message: "Internal server error while updating resource",
       success: false,

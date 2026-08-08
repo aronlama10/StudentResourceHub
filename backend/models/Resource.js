@@ -20,6 +20,7 @@ const ResourceSchema = new Schema({
       "Civil Engineering",
       "CS & IT",
       "Architecture Engineering",
+      "Electrical & Electronics Engineering"
     ],
   },
   courseCode: {

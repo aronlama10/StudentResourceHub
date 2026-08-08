@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from "react";
 import "../../css/dashboard/profile.css";
 import "../../css/dashboard/upload.css"; // Reuse input and button styles
-import { getProfile, updateProfile, updateEmail, updatePassword } from "../../services/userService";
+import {
+  getProfile,
+  updateProfile,
+  updateEmail,
+  updatePassword,
+} from "../../services/userService";
 import { handleSuccess, handleError } from "../../utils";
 
 function Profile() {
@@ -102,11 +107,15 @@ function Profile() {
     try {
       const response = await updatePassword(
         passwordForm.currentPassword,
-        passwordForm.newPassword
+        passwordForm.newPassword,
       );
       if (response.success) {
         handleSuccess(response.message || "Password changed successfully!");
-        setPasswordForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
+        setPasswordForm({
+          currentPassword: "",
+          newPassword: "",
+          confirmPassword: "",
+        });
         setEditMode(null);
       } else {
         handleError(response.message || "Failed to update password.");
@@ -119,16 +128,21 @@ function Profile() {
 
   const toggleNotifications = async () => {
     const updatedNotifications = !profileForm.notificationsEnabled;
-    const updatedForm = { ...profileForm, notificationsEnabled: updatedNotifications };
+    const updatedForm = {
+      ...profileForm,
+      notificationsEnabled: updatedNotifications,
+    };
     setProfileForm(updatedForm);
-    
+
     try {
       const response = await updateProfile(updatedForm);
       if (response.success) {
         setProfile(response.user);
         handleSuccess("Notifications preference updated.");
       } else {
-        handleError(response.message || "Failed to update notification settings.");
+        handleError(
+          response.message || "Failed to update notification settings.",
+        );
       }
     } catch (err) {
       console.error(err);
@@ -145,7 +159,12 @@ function Profile() {
   }
 
   const avatarText = profile?.name
-    ? profile.name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase()
+    ? profile.name
+        .split(" ")
+        .map((w) => w[0])
+        .join("")
+        .slice(0, 2)
+        .toUpperCase()
     : "?";
 
   return (
@@ -164,9 +183,14 @@ function Profile() {
           <div className="profile-card__avatar">{avatarText}</div>
           <h3 className="profile-card__name">{profile?.name}</h3>
           <p className="profile-card__meta">
-            {profile?.department ? `${profile.department} · ${profile.year}` : "No Department Set"}
+            {profile?.department
+              ? `${profile.department} · ${profile.year}`
+              : "No Department Set"}
           </p>
-          <button className="profile-card__btn" onClick={() => setEditMode("profile")}>
+          <button
+            className="profile-card__btn"
+            onClick={() => setEditMode("profile")}
+          >
             Edit Profile
           </button>
         </article>
@@ -181,7 +205,10 @@ function Profile() {
                   <p className="profile-setting__label">Email</p>
                   <p className="profile-setting__value">{profile?.email}</p>
                 </div>
-                <button className="profile-setting__btn" onClick={() => setEditMode("email")}>
+                <button
+                  className="profile-setting__btn"
+                  onClick={() => setEditMode("email")}
+                >
                   Update
                 </button>
               </div>
@@ -190,7 +217,10 @@ function Profile() {
                   <p className="profile-setting__label">Password</p>
                   <p className="profile-setting__value">••••••••</p>
                 </div>
-                <button className="profile-setting__btn" onClick={() => setEditMode("password")}>
+                <button
+                  className="profile-setting__btn"
+                  onClick={() => setEditMode("password")}
+                >
                   Change
                 </button>
               </div>
@@ -198,10 +228,15 @@ function Profile() {
                 <div>
                   <p className="profile-setting__label">Notifications</p>
                   <p className="profile-setting__value">
-                    {profile?.notificationsEnabled ? "Weekly digest enabled" : "Notifications disabled"}
+                    {profile?.notificationsEnabled
+                      ? "Weekly digest enabled"
+                      : "Notifications disabled"}
                   </p>
                 </div>
-                <button className="profile-setting__btn" onClick={toggleNotifications}>
+                <button
+                  className="profile-setting__btn"
+                  onClick={toggleNotifications}
+                >
                   Toggle
                 </button>
               </div>
@@ -209,10 +244,15 @@ function Profile() {
                 <div>
                   <p className="profile-setting__label">Privacy</p>
                   <p className="profile-setting__value">
-                    {profile?.profilePrivacy === "public" ? "Public profile" : "Private profile"}
+                    {profile?.profilePrivacy === "public"
+                      ? "Public profile"
+                      : "Private profile"}
                   </p>
                 </div>
-                <button className="profile-setting__btn" onClick={() => setEditMode("profile")}>
+                <button
+                  className="profile-setting__btn"
+                  onClick={() => setEditMode("profile")}
+                >
                   Manage
                 </button>
               </div>
@@ -231,7 +271,9 @@ function Profile() {
                     type="text"
                     className="form-input"
                     value={profileForm.name}
-                    onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
+                    onChange={(e) =>
+                      setProfileForm({ ...profileForm, name: e.target.value })
+                    }
                     required
                   />
                 </label>
@@ -242,13 +284,18 @@ function Profile() {
                     <select
                       className="form-input form-select"
                       value={profileForm.department}
-                      onChange={(e) => setProfileForm({ ...profileForm, department: e.target.value })}
+                      onChange={(e) =>
+                        setProfileForm({
+                          ...profileForm,
+                          department: e.target.value,
+                        })
+                      }
                     >
                       <option>Computer Engineering</option>
                       <option>Civil Engineering</option>
                       <option>CS & IT</option>
                       <option>Architecture Engineering</option>
-                      <option>Electrical Engineering</option>
+                      <option>Electrical & Electronics Engineering</option>
                     </select>
                   </label>
 
@@ -257,7 +304,9 @@ function Profile() {
                     <select
                       className="form-input form-select"
                       value={profileForm.year}
-                      onChange={(e) => setProfileForm({ ...profileForm, year: e.target.value })}
+                      onChange={(e) =>
+                        setProfileForm({ ...profileForm, year: e.target.value })
+                      }
                     >
                       <option>Year 1</option>
                       <option>Year 2</option>
@@ -272,18 +321,33 @@ function Profile() {
                   <select
                     className="form-input form-select"
                     value={profileForm.profilePrivacy}
-                    onChange={(e) => setProfileForm({ ...profileForm, profilePrivacy: e.target.value })}
+                    onChange={(e) =>
+                      setProfileForm({
+                        ...profileForm,
+                        profilePrivacy: e.target.value,
+                      })
+                    }
                   >
-                    <option value="public">Public - Others can see your uploads</option>
-                    <option value="private">Private - Keep your profile private</option>
+                    <option value="public">
+                      Public - Others can see your uploads
+                    </option>
+                    <option value="private">
+                      Private - Keep your profile private
+                    </option>
                   </select>
                 </label>
 
-                <div style={{ marginTop: "24px", display: "flex", gap: "12px" }}>
+                <div
+                  style={{ marginTop: "24px", display: "flex", gap: "12px" }}
+                >
                   <button type="submit" className="primary-btn">
                     Save Changes
                   </button>
-                  <button type="button" className="secondary-btn" onClick={() => setEditMode(null)}>
+                  <button
+                    type="button"
+                    className="secondary-btn"
+                    onClick={() => setEditMode(null)}
+                  >
                     Cancel
                   </button>
                 </div>
@@ -308,11 +372,17 @@ function Profile() {
                   />
                 </label>
 
-                <div style={{ marginTop: "24px", display: "flex", gap: "12px" }}>
+                <div
+                  style={{ marginTop: "24px", display: "flex", gap: "12px" }}
+                >
                   <button type="submit" className="primary-btn">
                     Update Email
                   </button>
-                  <button type="button" className="secondary-btn" onClick={() => setEditMode(null)}>
+                  <button
+                    type="button"
+                    className="secondary-btn"
+                    onClick={() => setEditMode(null)}
+                  >
                     Cancel
                   </button>
                 </div>
@@ -333,7 +403,10 @@ function Profile() {
                     className="form-input"
                     value={passwordForm.currentPassword}
                     onChange={(e) =>
-                      setPasswordForm({ ...passwordForm, currentPassword: e.target.value })
+                      setPasswordForm({
+                        ...passwordForm,
+                        currentPassword: e.target.value,
+                      })
                     }
                     required
                   />
@@ -347,7 +420,10 @@ function Profile() {
                       className="form-input"
                       value={passwordForm.newPassword}
                       onChange={(e) =>
-                        setPasswordForm({ ...passwordForm, newPassword: e.target.value })
+                        setPasswordForm({
+                          ...passwordForm,
+                          newPassword: e.target.value,
+                        })
                       }
                       required
                     />
@@ -360,18 +436,27 @@ function Profile() {
                       className="form-input"
                       value={passwordForm.confirmPassword}
                       onChange={(e) =>
-                        setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })
+                        setPasswordForm({
+                          ...passwordForm,
+                          confirmPassword: e.target.value,
+                        })
                       }
                       required
                     />
                   </label>
                 </div>
 
-                <div style={{ marginTop: "24px", display: "flex", gap: "12px" }}>
+                <div
+                  style={{ marginTop: "24px", display: "flex", gap: "12px" }}
+                >
                   <button type="submit" className="primary-btn">
                     Change Password
                   </button>
-                  <button type="button" className="secondary-btn" onClick={() => setEditMode(null)}>
+                  <button
+                    type="button"
+                    className="secondary-btn"
+                    onClick={() => setEditMode(null)}
+                  >
                     Cancel
                   </button>
                 </div>
