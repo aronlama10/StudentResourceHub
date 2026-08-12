@@ -16,6 +16,7 @@ import PublicRoute from "./components/PublicRoute";
 import { toast, ToastContainer } from "react-toastify";
 import { ThemeProvider } from "./context/ThemeContext";
 import ThemeToggle from "./components/ThemeToggle";
+import { Analytics } from '@vercel/analytics/react';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
             autoClose={3000}
             theme="dark"
           />
+          <Analytics />
           <ThemeToggle />
           <Routes>
             <Route path="/" element={<PublicRoute><LandingPage /></PublicRoute>} />
