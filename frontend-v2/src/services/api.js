@@ -58,6 +58,8 @@ export const api = {
     request(path, { ...options, method: "POST", body: JSON.stringify(body) }),
   put: (path, body, options) =>
     request(path, { ...options, method: "PUT", body: JSON.stringify(body) }),
+  patch: (path, body, options) =>
+    request(path, { ...options, method: "PATCH", body: JSON.stringify(body) }),
   postForm: (path, formData, options) =>
     requestForm(path, { ...options, method: "POST", body: formData }),
   putForm: (path, formData, options) =>

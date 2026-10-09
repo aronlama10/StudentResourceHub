@@ -5,14 +5,17 @@ const path = require("path");
 
 const uploadToCloudinary = (buffer, resourceType) => {
   return new Promise((resolve, reject) => {
-    const uploadStream = cloudinary.uploader.upload_stream(
+    const uploadStream = cloudinary.uploader.upload_chunked_stream(
       {
         folder: "StudentResourceHub",
         resource_type: resourceType,
+        chunk_size: 6000000,
       },
       (error, result) => {
         if (error) {
           reject(error);
+        } else if (result && result.done === false) {
+          // Intermediate chunk response — wait for the final response.
         } else {
           resolve(result);
         }
@@ -25,7 +28,8 @@ const uploadToCloudinary = (buffer, resourceType) => {
 
 const createResource = async (req, res) => {
   try {
-    const { title, department, courseCode, detail, excerpt, labels } = req.body;
+    const { title, department, semester, courseCode, detail, excerpt, labels } =
+      req.body;
     const normalizedCourseCode =
       typeof courseCode === "string" ? courseCode.trim() : courseCode;
 
@@ -77,6 +81,7 @@ const createResource = async (req, res) => {
       title,
       author: req.user._id,
       department,
+      semester: Number(semester),
       courseCode: normalizedCourseCode || "",
       detail,
       excerpt,
@@ -128,6 +133,12 @@ const getResources = async (req, res) => {
   try {
     const { department, search, myUploads } = req.query;
     let query = {};
+
+    if (myUploads === "true" && req.user) {
+      query.author = req.user._id;
+    } else {
+      query.status = "approved";
+    }
 
     if (department) {
       query.department = department;
@@ -315,18 +326,33 @@ const updateResource = async (req, res) => {
       };
     }
 
+    // Prepare the fields that will be updated
+    const updateData = {
+      title: title || resource.title,
+      department: department || resource.department,
+      courseCode:
+        courseCode === undefined ? resource.courseCode : courseCode.trim(),
+      detail: detail || resource.detail,
+      excerpt: excerpt || resource.excerpt,
+      labels: parsedLabels,
+      ...fileUpdate,
+    };
+
+    // If the resource was previously rejected,
+    // editing it means the student is resubmitting it.
+    // Send it back to the pending moderation queue.
+    if (resource.status === "rejected") {
+      updateData.status = "pending";
+      updateData.rejectionReason = "";
+      updateData.reviewedBy = null;
+      updateData.reviewedAt = null;
+      updateData.isVerified = false;
+      updateData.verificationNote = "";
+    }
+
     const updatedResource = await ResourceModel.findByIdAndUpdate(
       id,
-      {
-        title: title || resource.title,
-        department: department || resource.department,
-        courseCode:
-          courseCode === undefined ? resource.courseCode : courseCode.trim(),
-        detail: detail || resource.detail,
-        excerpt: excerpt || resource.excerpt,
-        labels: parsedLabels,
-        ...fileUpdate,
-      },
+      updateData,
       {
         new: true,
       },
@@ -403,10 +429,330 @@ const deleteResource = async (req, res) => {
   }
 };
 
+const getPendingResources = async (req, res) => {
+  try {
+    const resources = await ResourceModel.find({
+      status: "pending",
+    })
+      .populate("author", "name")
+      .sort({ postedAt: -1 });
+
+    const formattedResources = resources.map((resource) => {
+      const doc = resource.toObject();
+
+      return {
+        ...doc,
+        id: doc._id,
+        author: doc.author ? doc.author.name : "Unknown User",
+        authorId: doc.author ? doc.author._id : null,
+      };
+    });
+
+    return res.status(200).json({
+      success: true,
+      resources: formattedResources,
+    });
+  } catch (err) {
+    console.error("GET PENDING RESOURCES ERROR:", err);
+
+    return res.status(500).json({
+      message: "Internal server error while fetching pending resources",
+      success: false,
+    });
+  }
+};
+
+const getRejectedResources = async (req, res) => {
+  try {
+    const resources = await ResourceModel.find({
+      status: "rejected",
+    })
+      .populate("author", "name")
+      .populate("reviewedBy", "name")
+      .sort({ reviewedAt: -1, postedAt: -1 });
+
+    const formattedResources = resources.map((resource) => {
+      const doc = resource.toObject();
+
+      return {
+        ...doc,
+        id: doc._id,
+        author: doc.author ? doc.author.name : "Unknown User",
+        authorId: doc.author ? doc.author._id : null,
+        reviewer: doc.reviewedBy ? doc.reviewedBy.name : "Unknown Reviewer",
+      };
+    });
+
+    return res.status(200).json({
+      success: true,
+      resources: formattedResources,
+    });
+  } catch (err) {
+    console.error("GET REJECTED RESOURCES ERROR:", err);
+
+    return res.status(500).json({
+      message: "Internal server error while fetching rejected resources",
+      success: false,
+    });
+  }
+};
+
+const getApprovedResources = async (req, res) => {
+  try {
+    const resources = await ResourceModel.find({
+      status: "approved",
+    })
+      .populate("author", "name")
+      .sort({ reviewedAt: -1, postedAt: -1 });
+
+    const formattedResources = resources.map((resource) => {
+      const doc = resource.toObject();
+
+      return {
+        ...doc,
+        id: doc._id,
+        author: doc.author ? doc.author.name : "Unknown User",
+        authorId: doc.author ? doc.author._id : null,
+      };
+    });
+
+    return res.status(200).json({
+      success: true,
+      resources: formattedResources,
+    });
+  } catch (err) {
+    console.error("GET APPROVED RESOURCES ERROR:", err);
+
+    return res.status(500).json({
+      message: "Internal server error while fetching approved resources",
+      success: false,
+    });
+  }
+};
+
+const getArchivedResources = async (req, res) => {
+  try {
+    const resources = await ResourceModel.find({
+      status: "archived",
+    })
+      .populate("author", "name")
+      .sort({ reviewedAt: -1, postedAt: -1 });
+
+    const formattedResources = resources.map((resource) => {
+      const doc = resource.toObject();
+
+      return {
+        ...doc,
+        id: doc._id,
+        author: doc.author ? doc.author.name : "Unknown User",
+        authorId: doc.author ? doc.author._id : null,
+      };
+    });
+
+    return res.status(200).json({
+      success: true,
+      resources: formattedResources,
+    });
+  } catch (err) {
+    console.error("GET ARCHIVED RESOURCES ERROR:", err);
+
+    return res.status(500).json({
+      message: "Internal server error while fetching archived resources",
+      success: false,
+    });
+  }
+};
+
+const approveResource = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const resource = await ResourceModel.findById(id);
+
+    if (!resource) {
+      return res.status(404).json({
+        message: "Resource not found",
+        success: false,
+      });
+    }
+
+    if (resource.status !== "pending") {
+      return res.status(400).json({
+        message: "Only pending resources can be approved",
+        success: false,
+      });
+    }
+
+    resource.status = "approved";
+    resource.reviewedBy = req.user._id;
+    resource.reviewedAt = new Date();
+    resource.isVerified = true;
+    resource.verificationNote = "Reviewed and approved by moderator.";
+
+    await resource.save();
+
+    return res.status(200).json({
+      message: "Resource approved successfully",
+      success: true,
+      resource,
+    });
+  } catch (err) {
+    console.error("APPROVE RESOURCE ERROR:", err);
+
+    return res.status(500).json({
+      message: "Internal server error while approving resource",
+      success: false,
+    });
+  }
+};
+
+const rejectResource = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { rejectionReason } = req.body;
+
+    if (!rejectionReason || !rejectionReason.trim()) {
+      return res.status(400).json({
+        message: "Rejection reason is required",
+        success: false,
+      });
+    }
+
+    const resource = await ResourceModel.findById(id);
+
+    if (!resource) {
+      return res.status(404).json({
+        message: "Resource not found",
+        success: false,
+      });
+    }
+
+    if (resource.status !== "pending") {
+      return res.status(400).json({
+        message: "Only pending resources can be rejected",
+        success: false,
+      });
+    }
+
+    resource.status = "rejected";
+    resource.rejectionReason = rejectionReason.trim();
+    resource.reviewedBy = req.user._id;
+    resource.reviewedAt = new Date();
+
+    await resource.save();
+
+    return res.status(200).json({
+      message: "Resource rejected successfully",
+      success: true,
+      resource,
+    });
+  } catch (err) {
+    console.error("REJECT RESOURCE ERROR:", err);
+
+    return res.status(500).json({
+      message: "Internal server error while rejecting resource",
+      success: false,
+    });
+  }
+};
+
+const archiveResource = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const resource = await ResourceModel.findById(id);
+
+    if (!resource) {
+      return res.status(404).json({
+        message: "Resource not found",
+        success: false,
+      });
+    }
+
+    if (resource.status !== "approved") {
+      return res.status(400).json({
+        message: "Only approved resources can be archived",
+        success: false,
+      });
+    }
+
+    resource.status = "archived";
+    resource.isVerified = false;
+
+    await resource.save();
+
+    return res.status(200).json({
+      message: "Resource archived successfully",
+      success: true,
+      resource,
+    });
+  } catch (err) {
+    console.error("ARCHIVE RESOURCE ERROR:", err);
+
+    return res.status(500).json({
+      message: "Internal server error while archiving resource",
+      success: false,
+    });
+  }
+};
+
+const restoreResource = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const resource = await ResourceModel.findById(id);
+
+    if (!resource) {
+      return res.status(404).json({
+        message: "Resource not found",
+        success: false,
+      });
+    }
+
+    if (resource.status !== "archived") {
+      return res.status(400).json({
+        message: "Only archived resources can be restored",
+        success: false,
+      });
+    }
+
+    resource.status = "approved";
+
+    // Keep it unverified until it is reviewed again.
+    resource.isVerified = false;
+    resource.verificationNote = "";
+
+    await resource.save();
+
+    return res.status(200).json({
+      message: "Resource restored successfully",
+      success: true,
+      resource,
+    });
+  } catch (err) {
+    console.error("RESTORE RESOURCE ERROR:", err);
+
+    return res.status(500).json({
+      message: "Internal server error while restoring resource",
+      success: false,
+    });
+  }
+};
+
 module.exports = {
   createResource,
   getResources,
   getResourceById,
   updateResource,
   deleteResource,
+
+  getPendingResources,
+  getRejectedResources,
+  getApprovedResources,
+  getArchivedResources,
+
+  approveResource,
+  rejectResource,
+  archiveResource,
+  restoreResource,
 };

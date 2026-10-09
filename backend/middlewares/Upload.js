@@ -21,9 +21,9 @@ const fileFilter = (req, file, cb) => {
   } else {
     cb(
       new Error(
-        "Invalid file type. Only PDF, DOCX, DOC, ZIP and Images are allowed."
+        "Invalid file type. Only PDF, DOCX, DOC, ZIP and Images are allowed.",
       ),
-      false
+      false,
     );
   }
 };
@@ -32,7 +32,7 @@ const upload = multer({
   storage,
   fileFilter,
   limits: {
-    fileSize: 25 * 1024 * 1024,
+    fileSize: 10 * 1024 * 1024,
   },
 });
 

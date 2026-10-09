@@ -12,16 +12,21 @@ const ResourceSchema = new Schema({
     ref: "users", // Reference to the User model
     required: true,
   },
+
   department: {
     type: String,
     required: true,
     enum: [
       "Computer Engineering",
       "Civil Engineering",
-      "CS & IT",
       "Architecture Engineering",
-      "Electrical & Electronics Engineering"
+      "Electrical & Electronics Engineering",
     ],
+  },
+  semester: {
+    type: Number,
+    required: true,
+    enum: [1, 2, 3, 4, 5, 6],
   },
   courseCode: {
     type: String,
@@ -60,6 +65,37 @@ const ResourceSchema = new Schema({
   postedAt: {
     type: Date,
     default: Date.now,
+  },
+  status: {
+    type: String,
+    enum: ["pending", "approved", "rejected", "reported", "archived"],
+    default: "pending",
+  },
+
+  rejectionReason: {
+    type: String,
+    default: "",
+  },
+
+  reviewedBy: {
+    type: Schema.Types.ObjectId,
+    ref: "users",
+    default: null,
+  },
+
+  reviewedAt: {
+    type: Date,
+    default: null,
+  },
+
+  isVerified: {
+    type: Boolean,
+    default: false,
+  },
+
+  verificationNote: {
+    type: String,
+    default: "",
   },
 });
 

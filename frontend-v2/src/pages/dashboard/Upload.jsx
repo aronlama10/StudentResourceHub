@@ -24,6 +24,7 @@ function Upload() {
   const [formData, setFormData] = useState({
     author: localStorage.getItem("loggedInUser") || "",
     department: "Computer Engineering",
+    semester: "",
     postedAt: getCurrentDateTimeLocal(),
     title: "",
     courseCode: "",
@@ -33,6 +34,9 @@ function Upload() {
   });
 
   const isEditing = Boolean(location.state?.resource);
+
+  const isResubmitting =
+    isEditing && location.state?.resource?.status === "rejected";
 
   const [loading, setLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -85,6 +89,7 @@ function Upload() {
     setFormData({
       author: resource.author || "",
       department: resource.department || "Computer Engineering",
+      semester: resource.semester ? String(resource.semester) : "",
       postedAt: formatDateTimeLocal(resource.postedAt || resource.time),
       title: resource.title || "",
       courseCode: resource.courseCode || courseCode || "",
@@ -119,6 +124,7 @@ function Upload() {
       const data = new FormData();
       data.append("title", formData.title);
       data.append("department", formData.department);
+      data.append("semester", formData.semester);
       data.append("courseCode", formData.courseCode.trim());
       data.append("detail", formData.detail);
       data.append("excerpt", formData.excerpt);
@@ -141,9 +147,13 @@ function Upload() {
       }
 
       if (response.success) {
-        navigate("/dashboard/resources", {
+        navigate("/dashboard/my-resources", {
           state: {
-            successMessage: "Resources has been uploaded",
+            successMessage: isResubmitting
+              ? "Resource has been resubmitted for admin review."
+              : isEditing
+                ? "Resource updated successfully."
+                : "Resource has been submitted for review.",
           },
         });
       } else {
@@ -162,15 +172,45 @@ function Upload() {
       <header className="dashboard-section__header">
         <div>
           <h2 className="dashboard-section__title">
-            {isEditing ? "Edit Resource" : "Upload Resource"}
+            {isResubmitting
+              ? "Edit & Resubmit Resource"
+              : isEditing
+                ? "Edit Resource"
+                : "Upload Resource"}
           </h2>
           <p className="dashboard-section__subtitle">
-            {isEditing
-              ? "Update the details below to revise your resource."
-              : "Share notes, PDFs, and helpful resources with your peers."}
+            {isResubmitting
+              ? "Fix the issues identified during review and submit your resource again for approval."
+              : isEditing
+                ? "Update the details below to revise your resource."
+                : "Share notes, PDFs, and helpful resources with your peers."}
           </p>
         </div>
       </header>
+
+      {isResubmitting && (
+        <div className="resubmission-notice">
+          <div className="resubmission-notice__icon">⚠️</div>
+
+          <div className="resubmission-notice__content">
+            <strong>Resource was rejected</strong>
+
+            <p>
+              Please review the administrator's feedback below, make the
+              necessary changes, and submit the resource again for approval.
+            </p>
+
+            <div className="resubmission-notice__reason">
+              <span>Reason for rejection:</span>
+
+              <strong>
+                {location.state?.resource?.rejectionReason ||
+                  "No rejection reason was provided."}
+              </strong>
+            </div>
+          </div>
+        </div>
+      )}
 
       <form className="upload-card" onSubmit={handleSubmit}>
         <div className="upload-section">
@@ -191,18 +231,42 @@ function Upload() {
               />
             </label>
             <label className="form-label">
-              Department Tag
+              Department
               <select
                 className="form-input form-select"
                 name="department"
                 value={formData.department}
                 onChange={handleChange}
+                required
               >
-                <option>Computer Engineering</option>
-                <option>Civil Engineering</option>
-                <option>CS & IT</option>
-                <option>Architecture Engineering</option>
-                <option>Electrical & Electronics Engineering</option>
+                <option value="Computer Engineering">
+                  Computer Engineering
+                </option>
+                <option value="Civil Engineering">Civil Engineering</option>
+                <option value="Architecture Engineering">
+                  Architecture Engineering
+                </option>
+                <option value="Electrical & Electronics Engineering">
+                  Electrical & Electronics Engineering
+                </option>
+              </select>
+            </label>
+            <label className="form-label">
+              Semester
+              <select
+                className="form-input form-select"
+                name="semester"
+                value={formData.semester}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Select Semester</option>
+                <option value="1">1st Semester</option>
+                <option value="2">2nd Semester</option>
+                <option value="3">3rd Semester</option>
+                <option value="4">4th Semester</option>
+                <option value="5">5th Semester</option>
+                <option value="6">6th Semester</option>
               </select>
             </label>
           </div>
@@ -356,9 +420,9 @@ function Upload() {
         </div>
 
         <div className="upload-actions">
-          <button className="secondary-btn" type="button" disabled={loading}>
+          {/* <button className="secondary-btn" type="button" disabled={loading}>
             Preview Card
-          </button>
+          </button> */}
           <button className="primary-btn" type="submit" disabled={loading}>
             {loading ? (
               <span
@@ -369,8 +433,17 @@ function Upload() {
                 }}
               >
                 <span className="btn-spinner" />
-                <span>{isEditing ? "Saving..." : "Publishing..."}</span>
+
+                <span>
+                  {isResubmitting
+                    ? "Resubmitting..."
+                    : isEditing
+                      ? "Saving..."
+                      : "Publishing..."}
+                </span>
               </span>
+            ) : isResubmitting ? (
+              "Submit for Review"
             ) : isEditing ? (
               "Save Changes"
             ) : (

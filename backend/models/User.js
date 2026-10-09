@@ -48,6 +48,11 @@ const UserSchema = new Schema({
     type: [{ type: Schema.Types.ObjectId, ref: "resources" }],
     default: [],
   },
+  role: {
+    type: String,
+    enum: ["student", "moderator", "admin"],
+    default: "student",
+  },
 });
 
 const UserModel = mongoose.model("users", UserSchema);

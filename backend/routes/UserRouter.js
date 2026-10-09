@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const ensureAuthenticated = require("../middlewares/Auth");
+const { ensureAuthenticated, requireRole } = require("../middlewares/Auth");
 const {
   getProfile,
   updateProfile,
@@ -10,6 +10,11 @@ const {
   checkSavedStatus,
   trackStudyStreak,
 } = require("../controllers/UserController");
+const {
+  getAllUsers,
+  updateUserRole,
+  deleteUser,
+} = require("../controllers/AdminUserController");
 
 router.get("/profile", ensureAuthenticated, getProfile);
 router.put("/profile", ensureAuthenticated, updateProfile);
@@ -23,5 +28,22 @@ router.post("/saved/:resourceId", ensureAuthenticated, toggleSaveResource);
 
 // Study streak routes
 router.post("/streak", ensureAuthenticated, trackStudyStreak);
+
+// Admin-only user management
+router.get("/admin", ensureAuthenticated, requireRole("admin"), getAllUsers);
+
+router.patch(
+  "/admin/:id/role",
+  ensureAuthenticated,
+  requireRole("admin"),
+  updateUserRole,
+);
+
+router.delete(
+  "/admin/:id",
+  ensureAuthenticated,
+  requireRole("admin"),
+  deleteUser,
+);
 
 module.exports = router;

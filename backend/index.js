@@ -8,6 +8,7 @@ const path = require('path');
 const AuthRouter = require('./routes/AuthRouter');
 const ResourceRouter = require('./routes/ResourceRouter');
 const UserRouter = require('./routes/UserRouter');
+const ReportRouter = require("./routes/ReportRouter");
 
 require('./models/db')
 const PORT = process.env.PORT || 8000;
@@ -25,6 +26,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/auth', AuthRouter);
 app.use('/resources', ResourceRouter);
 app.use('/users', UserRouter);
+app.use("/reports", ReportRouter);
 
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server is running on ${PORT}`);

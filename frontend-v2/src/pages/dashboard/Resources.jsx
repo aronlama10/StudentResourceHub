@@ -7,26 +7,31 @@ import {
   getSavedStatus,
 } from "../../services/savedService";
 import { handleSuccess, handleError } from "../../utils";
+import { createReport } from "../../services/reportService";
 
 const departments = [
   "Computer Engineering",
   "Civil Engineering",
-  "CS & IT",
   "Architecture Engineering",
-  "Electrical & Electronics Engineering"
+  "Electrical & Electronics Engineering",
 ];
 
-const suggestions = ["DCOM suggestion", "C programming"];
+// const suggestions = ["DCOM suggestion", "C programming"];
 
 function Resources() {
   const navigate = useNavigate();
   const location = useLocation();
   const [allResources, setAllResources] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedFilter, setSelectedFilter] = useState(null);
+  const [selectedDepartment, setSelectedDepartment] = useState("");
+  const [selectedSemester, setSelectedSemester] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [savedIds, setSavedIds] = useState(new Set());
   const [savingIds, setSavingIds] = useState(new Set());
+  const [reportingResource, setReportingResource] = useState(null);
+  const [reportCategory, setReportCategory] = useState("Broken Link");
+  const [reportReason, setReportReason] = useState("");
+  const [reportSubmitting, setReportSubmitting] = useState(false);
   const dropdownRef = useRef(null);
 
   // Get the current user's ID from the JWT token
@@ -47,13 +52,14 @@ function Resources() {
     setIsDropdownOpen((prev) => !prev);
   };
 
-  const handleSelectFilter = (filter) => {
-    setSelectedFilter(filter);
+  const handleSelectDepartment = (department) => {
+    setSelectedDepartment(department);
     setIsDropdownOpen(false);
   };
 
   const clearFilter = () => {
-    setSelectedFilter(null);
+    setSelectedDepartment("");
+    setSelectedSemester("");
   };
 
   // Fetch resources from backend
@@ -158,9 +164,16 @@ function Resources() {
     };
   }, []);
 
-  const filteredResources = selectedFilter
-    ? allResources.filter((resource) => resource.tag === selectedFilter)
-    : allResources;
+  const filteredResources = allResources.filter((resource) => {
+    const matchesDepartment =
+      !selectedDepartment || resource.department === selectedDepartment;
+
+    const matchesSemester =
+      !selectedSemester ||
+      Number(resource.semester) === Number(selectedSemester);
+
+    return matchesDepartment && matchesSemester;
+  });
 
   const handleViewResource = (resource) => {
     if (!resource.fileUrl) {
@@ -185,6 +198,64 @@ function Resources() {
     window.location.href = downloadUrl;
   };
 
+  const openReportForm = (resource) => {
+    setReportingResource(resource);
+    setReportCategory("Broken Link");
+    setReportReason("");
+  };
+
+  const closeReportForm = () => {
+    if (reportSubmitting) return;
+
+    setReportingResource(null);
+    setReportCategory("Broken Link");
+    setReportReason("");
+  };
+
+  const handleSubmitReport = async (event) => {
+    event.preventDefault();
+
+    if (!reportingResource || reportSubmitting) return;
+
+    const reason = reportReason.trim();
+
+    if (!reason) {
+      handleError("Please explain why you are reporting this resource.");
+      return;
+    }
+
+    if (reason.length > 1000) {
+      handleError("Your explanation must be 1000 characters or fewer.");
+      return;
+    }
+
+    const resourceId = reportingResource.id || reportingResource._id;
+
+    try {
+      setReportSubmitting(true);
+
+      const response = await createReport(resourceId, {
+        category: reportCategory,
+        reason,
+      });
+
+      if (response?.success) {
+        handleSuccess("Report submitted successfully.");
+
+        setReportingResource(null);
+        setReportReason("");
+        setReportCategory("Broken Link");
+      } else {
+        handleError(response?.message || "Failed to submit your report.");
+      }
+    } catch (err) {
+      console.error("Submit resource report error:", err);
+      handleError("An error occurred while submitting your report.");
+    } finally {
+      setReportSubmitting(false);
+    }
+  };
+
   return (
     <section className="dashboard-section dashboard-section--resources">
       <header className="resources-header">
@@ -203,11 +274,7 @@ function Resources() {
               >
                 <path d="M440-120v-240h80v80h320v80H520v80h-80Zm-320-80v-80h240v80H120Zm160-160v-80H120v-80h160v-80h80v240h-80Zm160-80v-80h400v80H440Zm160-160v-240h80v80h160v80H680v80h-80Zm-480-80v-80h400v80H120Z" />
               </svg>
-              <span>
-                {departments.includes(selectedFilter)
-                  ? selectedFilter
-                  : "Filter"}
-              </span>
+              <span>{selectedDepartment || "All Departments"}</span>
               <span className="arrow-icon">▼</span>
             </button>
             {isDropdownOpen && (
@@ -215,8 +282,8 @@ function Resources() {
                 {departments.map((dept) => (
                   <li key={dept}>
                     <button
-                      className={`dropdown-item ${selectedFilter === dept ? "selected" : ""}`}
-                      onClick={() => handleSelectFilter(dept)}
+                      className={`dropdown-item ${selectedDepartment === dept ? "selected" : ""}`}
+                      onClick={() => handleSelectDepartment(dept)}
                     >
                       {dept}
                     </button>
@@ -226,22 +293,29 @@ function Resources() {
             )}
           </div>
 
-          <div className="suggestion-tags">
-            {suggestions.map((suggestion) => (
-              <button
-                key={suggestion}
-                className={`suggestion-tag-btn ${selectedFilter === suggestion ? "active" : ""}`}
-                onClick={() => handleSelectFilter(suggestion)}
-              >
-                {suggestion}
-              </button>
-            ))}
-            {selectedFilter && (
-              <button className="clear-filter-btn" onClick={clearFilter}>
-                ✕ Clear
-              </button>
-            )}
-          </div>
+          <label className="semester-filter">
+            <span>Semester:</span>
+            <select
+              value={selectedSemester}
+              onChange={(event) => setSelectedSemester(event.target.value)}
+              aria-label="Filter by semester"
+              className=""
+            >
+              <option value="">All Semesters</option>
+              <option value="1">1st Semester</option>
+              <option value="2">2nd Semester</option>
+              <option value="3">3rd Semester</option>
+              <option value="4">4th Semester</option>
+              <option value="5">5th Semester</option>
+              <option value="6">6th Semester</option>
+            </select>
+          </label>
+
+          {(selectedDepartment || selectedSemester) && (
+            <button className="clear-filter-btn" onClick={clearFilter}>
+              ✕ Clear
+            </button>
+          )}
 
           <span className="resource-count">
             Showing {filteredResources.length} resource
@@ -276,7 +350,11 @@ function Resources() {
                     {resource.author}
                   </p>
                   <p className="resource-card__author-meta">
-                    {resource.tag} · {resource.time}
+                    {resource.department || resource.tag} ·{" "}
+                    {resource.semester
+                      ? `Semester ${resource.semester}`
+                      : "Semester not set"}{" "}
+                    · {resource.time}
                   </p>
                 </div>
 
@@ -323,17 +401,30 @@ function Resources() {
 
               <div className="resource-card__actions">
                 <button
+                  type="button"
                   className="resource-card__action-btn"
                   onClick={() => handleViewResource(resource)}
                 >
                   👁️ View Resource
                 </button>
+
                 <button
+                  type="button"
                   className="resource-card__action-btn resource-card__action-btn--primary"
                   onClick={() => handleDownload(resource)}
                 >
                   📥 Download
                 </button>
+
+                {!isOwn && (
+                  <button
+                    type="button"
+                    className="resource-card__action-btn"
+                    onClick={() => openReportForm(resource)}
+                  >
+                    🚩 Report
+                  </button>
+                )}
               </div>
             </article>
           );
@@ -361,6 +452,93 @@ function Resources() {
         <span className="resources-fab__icon">+</span>
         <span className="resources-fab__text">Upload</span>
       </button>
+
+        {reportingResource && (
+        <div
+          className="report-modal-overlay"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) {
+              closeReportForm();
+            }
+          }}
+        >
+          <div
+            className="report-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="report-modal-title"
+          >
+            <div className="report-modal__header">
+              <div>
+                <h2 id="report-modal-title">Report Resource</h2>
+                <p>{reportingResource.title}</p>
+              </div>
+
+              <button
+                type="button"
+                className="report-modal__close"
+                onClick={closeReportForm}
+                disabled={reportSubmitting}
+                aria-label="Close report form"
+              >
+                ×
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmitReport}>
+              <label htmlFor="report-category">Reason category</label>
+
+              <select
+                id="report-category"
+                value={reportCategory}
+                onChange={(event) => setReportCategory(event.target.value)}
+                disabled={reportSubmitting}
+                required
+              >
+                <option value="Broken Link">Broken Link</option>
+                <option value="Duplicate Resource">Duplicate Resource</option>
+                <option value="Incorrect Content">Incorrect Content</option>
+                <option value="Inappropriate Content">
+                  Inappropriate Content
+                </option>
+                <option value="Copyright Concern">Copyright Concern</option>
+                <option value="Other">Other</option>
+              </select>
+
+              <label htmlFor="report-reason">Explain the issue</label>
+
+              <textarea
+                id="report-reason"
+                value={reportReason}
+                onChange={(event) => setReportReason(event.target.value)}
+                placeholder="Describe the problem with this resource..."
+                rows={4}
+                maxLength={1000}
+                required
+                disabled={reportSubmitting}
+              />
+
+              <p className="report-modal__hint">
+                {reportReason.length}/1000 characters
+              </p>
+
+              <div className="report-modal__actions">
+                <button
+                  type="button"
+                  onClick={closeReportForm}
+                  disabled={reportSubmitting}
+                >
+                  Cancel
+                </button>
+
+                <button type="submit" disabled={reportSubmitting}>
+                  {reportSubmitting ? "Submitting..." : "Submit Report"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

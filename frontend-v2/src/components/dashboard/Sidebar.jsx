@@ -20,6 +20,19 @@ function Sidebar({ isOpen, onClose }) {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
+  let isAdminOrMod = false;
+  try {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      if (["admin", "moderator"].includes(payload.role)) {
+        isAdminOrMod = true;
+      }
+    }
+  } catch {
+    isAdminOrMod = false;
+  }
+
   const handleLogout = () => {
     setLoading(true);
     localStorage.removeItem("token");
@@ -62,6 +75,22 @@ function Sidebar({ isOpen, onClose }) {
             <span>{item.label}</span>
           </NavLink>
         ))}
+
+        {isAdminOrMod && (
+          <NavLink
+            to="/admin"
+            className={({ isActive }) =>
+              isActive ? "sidebar__item sidebar__item--active" : "sidebar__item"
+            }
+            onClick={onClose}
+            style={{ marginTop: "12px", borderTop: "1px solid var(--color-border)" }}
+          >
+            <span className="sidebar__icon" aria-hidden="true">
+              🛡️
+            </span>
+            <span>Admin Panel</span>
+          </NavLink>
+        )}
       </nav>
       <div className="sidebar__footer">
         <button
