@@ -5,18 +5,71 @@ import "../css/Header.css";
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 40);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  const [activeSection, setActiveSection] = useState("");
 
   const navLinks = [
     { label: "Features", href: "#features" },
     { label: "How It Works", href: "#how-it-works" },
     { label: "Community", href: "#invitation" },
   ];
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 40);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const sections = navLinks
+      .map((link) => document.querySelector(link.href))
+      .filter(Boolean);
+
+    if (!sections.length) return;
+
+    const updateActiveSection = () => {
+      // At the top of the landing page, no section link is active.
+      if (window.scrollY < 100) {
+        setActiveSection("");
+        return;
+      }
+
+      // Select the section closest to the header.
+      const headerHeight =
+        document.getElementById("site-header")?.offsetHeight || 80;
+
+      const currentSection = sections
+        .filter((section) => {
+          const rect = section.getBoundingClientRect();
+          return rect.top <= headerHeight + 100;
+        })
+        .sort(
+          (a, b) =>
+            b.getBoundingClientRect().top - a.getBoundingClientRect().top,
+        )[0];
+
+      setActiveSection(currentSection ? `#${currentSection.id}` : "");
+    };
+
+    window.addEventListener("scroll", updateActiveSection, {
+      passive: true,
+    });
+
+    updateActiveSection();
+
+    return () => {
+      window.removeEventListener("scroll", updateActiveSection);
+    };
+  }, []);
+
+  const handleNavClick = (href) => {
+    setActiveSection(href);
+    setMenuOpen(false);
+  };
 
   return (
     <header
@@ -25,7 +78,12 @@ export default function Header() {
     >
       <div className="header__inner container">
         {/* Logo */}
-        <a href="#" className="header__logo" id="logo">
+        <a
+          href="#"
+          className="header__logo"
+          id="logo"
+          onClick={() => setActiveSection("")}
+        >
           <span className="header__logo-icon">
             <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
               <defs>
@@ -66,15 +124,26 @@ export default function Header() {
               />
             </svg>
           </span>
+
           <span className="header__logo-text">
             Student<span className="gradient-text">Hub</span>
           </span>
         </a>
 
-        {/* Desktop Nav */}
+        {/* Desktop Navigation */}
         <nav className="header__nav" id="main-nav">
           {navLinks.map((link) => (
-            <a key={link.href} href={link.href} className="header__nav-link">
+            <a
+              key={link.href}
+              href={link.href}
+              className={`header__nav-link${
+                activeSection === link.href ? " active" : ""
+              }`}
+              aria-current={
+                activeSection === link.href ? "location" : undefined
+              }
+              onClick={() => handleNavClick(link.href)}
+            >
               {link.label}
             </a>
           ))}
@@ -89,6 +158,7 @@ export default function Header() {
           >
             Log In
           </Link>
+
           <Link
             to="/signup"
             className="header__btn header__btn--primary"
@@ -101,10 +171,13 @@ export default function Header() {
 
         {/* Mobile Menu Toggle */}
         <button
-          className={`header__burger${menuOpen ? " header__burger--active" : ""}`}
+          className={`header__burger${
+            menuOpen ? " header__burger--active" : ""
+          }`}
           id="mobile-menu-toggle"
-          onClick={() => setMenuOpen(!menuOpen)}
+          onClick={() => setMenuOpen((prev) => !prev)}
           aria-label="Toggle navigation menu"
+          aria-expanded={menuOpen}
         >
           <span />
           <span />
@@ -114,19 +187,27 @@ export default function Header() {
 
       {/* Mobile Menu */}
       <div
-        className={`header__mobile-menu${menuOpen ? " header__mobile-menu--open" : ""}`}
+        className={`header__mobile-menu${
+          menuOpen ? " header__mobile-menu--open" : ""
+        }`}
       >
         <nav className="header__mobile-nav">
           {navLinks.map((link) => (
             <a
               key={link.href}
               href={link.href}
-              className="header__mobile-link"
-              onClick={() => setMenuOpen(false)}
+              className={`header__mobile-link${
+                activeSection === link.href ? " active" : ""
+              }`}
+              aria-current={
+                activeSection === link.href ? "location" : undefined
+              }
+              onClick={() => handleNavClick(link.href)}
             >
               {link.label}
             </a>
           ))}
+
           <div className="header__mobile-actions">
             <Link
               to="/login"
@@ -135,6 +216,7 @@ export default function Header() {
             >
               Log In
             </Link>
+
             <Link
               to="/signup"
               className="header__btn header__btn--primary"
